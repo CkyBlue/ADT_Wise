@@ -222,22 +222,6 @@ class ADTObjectHandler:
 
 		print(demarc)
 					
-		########### The following will come in useful when making traversal
-
-		# else: # If empty ADT, displays atleast one blank line.
-
-		# 	# Builds a dictionary for formatting
-		# 	for headingCount in range(numberOfHeadings):
-
-		# 		# internal is set up as [ {<heading> : {<key>: <value>,} } ,],
-		# 		# Each outermost dictionary has only one key
-
-		# 		keyName = list(internals[headingCount].keys())[0]
-		# 		# The value to the header key is a dictionary consisting of properties: width and values
-		# 		parametersForRows[keyName] = ""
-
-		# 		print(placeholderTemplate.format(**parametersForRows))/
-
 	def displayPointersWithinADT(self):
 		# Returns a list [{<Pointer Namw>: <Pointer Value> }, ]
 		pointers = self.__object.getSpecialPointers() 
