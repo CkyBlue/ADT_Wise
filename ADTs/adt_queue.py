@@ -89,18 +89,22 @@ class queue:
 		# valueName must match the name of the parameter for the function
 
 		prompts["insert"] = [
+
 		{"promptMsg": "Enter item to be inserted", 
 		"validator": lambda x: len(x) <= 20 and x.replace(" ", "").isalnum(), # Anonymous func for validation
 		"errorMsg": "The item must be shorter than 20 letters, \nand aside from spaces must contain only alpha-numeric characters.",
 		"valueName": "itemToBeInserted"
+
 		}
 		]
 
 		prompts["search"] = [
+
 		{"promptMsg": "Enter item to be inserted", 
 		"validator": lambda x: True, # No validation needed
 		"errorMsg": "The item must be shorter than 20 letters, \nand aside from spaces must contain only alpha-numeric characters.",
 		"valueName": "itemToBeSearched"
+
 		}
 		]
 
@@ -110,12 +114,14 @@ class queue:
 		return self.__name
 
 	def getSpecialPointers(self):
-		"""Returns [{<Pointer Namw>: <Pointer Value> }, ]"""
-		pointers = [{"Free Pointer": self.freePointer},
-			{"Head Pointer": self.headPointer},
-			{"Tail Pointer": self.tailPointer}
-		]
+		pointers = ["Free Pointer", "Head Pointer", "Tail Pointer"]
 		return pointers
+
+	def getPointersValue(self, pointer):
+		valuesDict = {"Free Pointer": self.freePointer,
+		"Head Pointer": self.headPointer, 
+		"Tail Pointer": self.tailPointer}
+		return valuesDict[pointer]
 
 	def getMethods(self):
 		"""Returns a dictionary with call name for keys, 

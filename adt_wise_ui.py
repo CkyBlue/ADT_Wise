@@ -258,11 +258,10 @@ class ADTObjectHandler:
 		placeholderTemplate = padding + "|"
 		demarcLength = 1
 
-		extraSpaceToTheRight = 2
+		extraSpace = 2
 
 		# Makes a list out of length of pointer names and get's longest
-		#									Pointer name  						List of dictionary with single keys
-		maxLengthOfPointerName = max(len( list(pointer.keys())[0] ) for pointer in pointers) + extraSpaceToTheRight
+		maxLengthOfPointerName = max([len(pointer) for pointer in pointers]) + extraSpace
 
 		# Demarcation length
 		demarcLength += (widthForValues + 1)
@@ -279,9 +278,9 @@ class ADTObjectHandler:
 		# Body
 		for pointer in pointers: 
 			# Grabs the pointer name for the entry, there is only one key
-			pointerName = list(pointer.keys())[0]
+			pointerName = pointer
 
-			pointerValue = pointer[pointerName]
+			pointerValue = self.__object.getPointersValue(pointer)
 
 			parametersForRows = {"PointerName": pointerName, "Value": pointerValue}
 			print(placeholderTemplate.format(**parametersForRows))
