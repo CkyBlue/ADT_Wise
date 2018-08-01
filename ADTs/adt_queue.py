@@ -63,6 +63,10 @@ class queue:
 		self.headPointer = -1
 		self.tailPointer = -1
 
+		self.dataItems = ["Item", "Pointer"]
+		self.dataItemsWidth = {"Item": 20, "Pointer": 10}
+		self.dataItemsRetrievingFunc = {"Item": self.getItem, "Pointer": self.getPointer}
+
 		self.__log = []
 
 	def setLog(self, newLog):
@@ -132,23 +136,13 @@ class queue:
 		"search": self.search,
 		"remove": self.remove}
 
-	def getOrganizedData(self):
-		"""Gives the data that makes up the ADT."""
+	def getItem(self, index):
+		return self.nodeArray[index].item
 
-		# Information to parsed to display internal implementation [ {<heading>: {<attr>: <val>, } }, ]
-		info = [{"Item": {
-					"width": 20, 
-					"values": [self.nodeArray[index].item for index in range(self.numberOfNodes)]
-					}
-				},
-				{"Pointer": {
-					"width" : 10,
-					"values": [self.nodeArray[index].pointer for index in range(self.numberOfNodes)]
-					}
-				}]
+	def getPointer(self, index):
+		return self.nodeArray[index].pointer
 
-		return info
-				
+			
 	def __initialize(self, obj):
 		lenght = len(obj)
 		for index in range(lenght):

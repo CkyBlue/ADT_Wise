@@ -173,9 +173,9 @@ class ADTObjectHandler:
 
 	def displayValuesWithinADT(self):
 		# Returns a list [ {<heading>: {<attr>: <val>, } }, ]
-		internals = self.__object.getOrganizedData() 
+		obj = self.__object
 
-		numberOfHeadings = len(internals)
+		numberOfHeadings = len(obj.dataItems)
 
 		padding = "    "
 		widthForIndex = 15
@@ -190,14 +190,13 @@ class ADTObjectHandler:
 
 		demarcLength += (widthForIndex + 1)
 
-		for index in range(numberOfHeadings): 
+		for heading in obj.dataItems: 
 			# Accumulates headings into template for placeholder
 			# and sets up variables used for controlling output
 
-			# Grabs the key of the list entry, there is only one key
-			keyName = list(internals[index].keys())[0]
+			keyName = heading
 
-			width = internals[index][keyName]["width"] # Gets the width attribute
+			width = obj.dataItemsWidth[heading]
 
 			placeholderTemplate += "{" + keyName + ":^" + str(width) + "}|"
 			demarcLength += (width + 1)
@@ -208,21 +207,15 @@ class ADTObjectHandler:
 
 		print(demarc + "\n" + placeholderTemplate.format(**parametersForHeader) + "\n" + demarc)
 
-		for nodeIndex in range(self.__object.numberOfNodes):	
+		for nodeIndex in range(obj.numberOfNodes):	
 
 			parametersForRows = {}
 
 			# Builds a dictionary for formatting
-			for headingCount in range(numberOfHeadings):
+			for heading in obj.dataItems:
 
-				# internal is set up as [ {<heading> : {<key>: <value>,} } ,],
-
-				# Each outermost dictionary has only one key
-				keyName = list(internals[headingCount].keys())[0]
-
-				# The value to the header key is a dictionary consisting of properties: width and values
-				parametersForRows[keyName] = internals[headingCount][keyName]["values"][nodeIndex]
-
+				retrfunc = obj.dataItemsRetrievingFunc[heading]
+				parametersForRows[heading] = retrfunc(nodeIndex)
 				parametersForRows["Index"] = nodeIndex
 
 			print(placeholderTemplate.format(**parametersForRows))
