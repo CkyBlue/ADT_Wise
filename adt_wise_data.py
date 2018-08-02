@@ -2,6 +2,9 @@ import os
 
 """	adt_wise_data is the data module for the adt_wise app, 
 it handles reading and writing objects and maintaining the index
+
+TODO - Implementing objectStore through SQLite3
+Index through json
 """
 
 index = [] # Represents index File
@@ -12,7 +15,7 @@ def loadObj(name):
 	return objectStore[name]
 
 def loadIndex():
-	# Modify to read from file in the actual system
+	# Modify to read from file
 	return index
 
 def dumpObject(name, obj):

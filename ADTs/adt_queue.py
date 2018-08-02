@@ -4,11 +4,11 @@ need to be appended appropriately to the getMethods function.
 If the function needs arguments, the prompt, validator and error-message need
 to be served through the getInputPrompts function.
 
-Each function shows its working through a log
+Each function shows its working through a real-time log
 Information is added to the log through the function self.post(<Info-String>)
-Each time self.__refresh, or rfr in the short-hand form, is fired the info in the log is displayed
+Each time self.__refresh is fired the info in the log is displayed
 
-The return is a list of strings
+The return of each function is a list of strings
 it serves as the response message
 It is handled somewhat differently from logs
 
@@ -18,7 +18,7 @@ next refresh and user can follow the change more easily by
 knowing where to look 
 
 The info that shows up through 'help <command-name>'
-is the doc-string, the text in the triple quotation mark comments  
+is the doc-string
 """
 
 class node:

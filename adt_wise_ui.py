@@ -2,13 +2,9 @@ import adt_wise_logic as logic
 import os, copy
 from cmd import Cmd
 
-"""Status of 0 for errors that are expected and handled,
--1 for those that are unexpected.
-
-Design a way to add undo: Develop the undo group
-Develop argument pasrsing for create and load
+"""TODO - Add undo
 Add a delete function
-
+Implement persistent storage of created ADTs
 """
 	
 def clear():
