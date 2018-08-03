@@ -483,15 +483,18 @@ class adt_wise_ui(Cmd):
 		else:
 			print("Either provide no arguments or exactly 3 valid ones seperated by spaces.")
 
-promptLoop = adt_wise_ui()
-promptLoop.prompt = ":>> "
+def start():
+	promptLoop = adt_wise_ui()
+	promptLoop.prompt = ":>> "
 
-header = "...Starting"
-header += "\n" + "Type 'help' to list available commands."
-header += "\n" + "Type 'help' followed by command name for additional info on a command." 
-header += "\n"
- 
-promptLoop.cmdloop(header)
+	header = "...Starting"
+	header += "\n" + "Type 'help' to list available commands."
+	header += "\n" + "Type 'help' followed by command name for additional info on a command." 
+	header += "\n"
 
-# Expand to allow accessing through IDs generated on UI layer
+	promptLoop.cmdloop(header)
+
+if __name__ == "__main__":
+	start()
+
 
