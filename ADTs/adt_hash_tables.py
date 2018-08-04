@@ -4,11 +4,11 @@ need to be appended appropriately to the getMethods function.
 If the function needs arguments, the prompt, validator and error-message need
 to be served through the getInputPrompts function.
 
-Each function shows its working through a log
+Each function shows its working through a real-time log
 Information is added to the log through the function self.post(<Info-String>)
-Each time self.__refresh, or rfr in the short-hand form, is fired the info in the log is displayed
+Each time self.__refresh is fired the info in the log is displayed
 
-The return is a list of strings
+The return of each function is a list of strings
 it serves as the response message
 It is handled somewhat differently from logs
 
@@ -18,14 +18,16 @@ next refresh and user can follow the change more easily by
 knowing where to look 
 
 The info that shows up through 'help <command-name>'
-is the doc-string, the text in the triple quotation mark comments  
-"""
+is the doc-string
 
-### Note to self: Pad IDs in organized data return
+The arguments that the methods with call names receive 
+are meant to be string. idCol is implemented as integer so
+care should be taken when dealing with it."""
 
-class Record:
+
+class node:
 	def __init__(self):
-		self.idCol = ""
+		self.idCol = 0
 		self.data = ""
 
 class HashTable:
@@ -33,21 +35,19 @@ class HashTable:
 		self.__name = name
 		self.numberOfNodes = int(length)
 
-		self.recordArray = [Record() for i in range(self.numberOfNodes)]
-		self.initializeId(self.recordArray)
+		self.nodeArray = [node() for i in range(self.numberOfNodes)]
+		self.initializeId(self.nodeArray)
 
 		self.__refresh = (lambda: None)
 		self.usesPointers = False
 		self.__log = []
-
 
 	def initializeId(self, obj): # Set all IDs initially to 0
 		for index in range(len(obj)):
 			obj[index].idCol = 0
 
 	def __doc__(self):
-		### Add elaboration through other string items added to the list
-		### Each seperate entry prints on a different line
+		# Return the text with each element on its own separate line
 
 		text = ["A hash table is an abstract data type",
 		"Add more elaboration later..."
@@ -83,13 +83,13 @@ class HashTable:
 
 		prompts = {}
 
-		# The dictionary is inside an array so that if a single command need multiple values, the existing system permits
+		# Each dictionary is the data pertaining to one input
 		# valueName must match the name of the parameter for the function
 
 		prompts["insert"] = [
 
 		# Prompt for ID
-		{"promptMsg": "Enter item ID", 
+		{"promptMsg": "Enter item ID <0 to 9999>", 
 
 		"validator": lambda x: x.isdigit() and x <= "9999" and x >= "0", # Anonymous func for validation
 		"errorMsg": "The ID must be numbers only \nand between 0 to 9999.",
@@ -109,16 +109,20 @@ class HashTable:
 
 		prompts["search"] = [
 		{"promptMsg": "Enter item to be inserted", 
-		"validator": lambda x: True, # No validation needed
+
+		"validator": lambda x: len(x) <= 20 and x.replace(" ", "").isalnum(), # Anonymous func for validation
 		"errorMsg": "The item must be shorter than 20 letters, \nand aside from spaces must contain only alpha-numeric characters.",
+		
 		"valueName": "itemToBeSearched"
 		}
 		]
 
 		prompts["remove"] = [
 		{"promptMsg": "Enter the ID of the entry you wish to remove", 
-		"validator": lambda x: True, #
+		
+		"validator":lambda x: x.isdigit() and x <= "9999" and x >= "0", # Anonymous func for validation
 		"errorMsg": "The ID can be numbers only \nand between 0 to 9999.",
+		
 		"valueName": "idOfItemToBeRemoved"
 		}
 		]
@@ -130,7 +134,7 @@ class HashTable:
 
 	def insert(self, idForNewEntry, dataForNewEntry):
 
-		msg = []
+		msg = [] # End message
 
 		# Short-hand
 		post = self.post
@@ -141,13 +145,13 @@ class HashTable:
 		currentPointer = index
 		tableFull = False
 
-		while not tableFull and self.recordArray[currentPointer].idCol != 0: # Exhaust table
+		while not tableFull and self.nodeArray[currentPointer].idCol != 0: # Exhaust table
 
 			# Move to next position
 			currentPointer += 1
 
 			# If wrapping around needed
-			if currentPointer >= len(self.recordArray):
+			if currentPointer >= len(self.nodeArray):
 				currentPointer = 0
 
 			# If the current pointer wraps back to initial position
@@ -159,45 +163,82 @@ class HashTable:
 
 		else:
 
-			self.recordArray[currentPointer].idCol = idForNewEntry
-			self.recordArray[currentPointer].data = dataForNewEntry
+			self.nodeArray[currentPointer].idCol = int(idForNewEntry)
+			self.nodeArray[currentPointer].data = dataForNewEntry
 
 			msg.append("The item was added successfully at index {}".format(currentPointer))
 
+		return msg
+
 	def remove(self, idOfItemToBeRemoved):
 
-		if idForNewEntry.isdigit():
-			index = self.hash(idForNewEntry)
-			pointer = index
-			noRecord= False
-			while not noRecord and idForNewEntry != self.recordArray[pointer].idCol:
-				pointer += 1
-				if pointer >= len(self.recordArray):
-					pointer = 0
-				if pointer == index:
-					noRecord = True
-			if noRecord:
-				print("No matching record found!")
-			else:
-				self.recordArray[pointer].data = ""
-				self.recordArray[pointer].idCol = "0000"
-				print("Entry removed!")
+		msg = [] # End message
 
-	def search(self, idForNewEntry):
-		if idForNewEntry.isdigit():
-			index = self.hash(idForNewEntry)
-			pointer = index
-			tableExausted = False
-			while not tableExausted and idForNewEntry != self.recordArray[pointer].idCol:
-				pointer += 1
-				if pointer >= len(self.recordArray):
-					pointer = 0
-				if pointer == index or self.recordArray[pointer].data == "":
-					tableExausted = True
-			if not tableExausted:
-				print("Record found at index {}".format(pointer))
-			else:
-				print("No matching entry found!")
+		# Short-hand
+		post = self.post
+		rfr = self.__refresh
+
+		idOfItemToBeRemoved = int(idOfItemToBeRemoved)
+
+		index = self.hash(idOfItemToBeRemoved)
+
+		pointer = index
+
+		itemNotFound = False
+
+		while not itemNotFound and idOfItemToBeRemoved != self.nodeArray[pointer].idCol:
+
+			pointer += 1 # Traverse
+
+			if pointer >= len(self.nodeArray): # Wrap if necessary
+				pointer = 0
+
+			if pointer == index: # Back to the start?
+				itemNotFound = True
+
+		if itemNotFound:
+			msg.append("No entry with that ID was found.")
+
+		else:
+			# Empty the node
+			self.nodeArray[pointer].data = ""
+			self.nodeArray[pointer].idCol = 0
+
+			msg.append("Entry was found at index {} and removed.".format(pointer))
+
+		return msg
+
+	def search(self, idToBeSearchedFor):
+
+		msg = [] # End message
+
+		# Short-hand
+		post = self.post
+		rfr = self.__refresh
+
+		idToBeSearchedFor = int(idToBeSearchedFor)
+
+		index = self.hash(idToBeSearchedFor)
+		pointer = index
+
+		tableExausted = False
+
+		while not tableExausted and idToBeSearchedFor != self.nodeArray[pointer].idCol:
+
+			pointer += 1 # Traverse
+
+			if pointer >= len(self.nodeArray): # Wrap if necessary
+				pointer = 0
+
+			if pointer == index: # If back to start
+				tableExausted = True
+
+		if not tableExausted:
+			msg.append("Entry found at index {},".format(pointer))
+			msg.append("Data: {}".format(self.nodeArray[pointer].data))
+
+		else:
+			msg.append("No entry with that ID was found.")
 
 
 	def hash(self, key):
@@ -215,10 +256,10 @@ while True:
 		print(demarc)
 		print("|{:^10} | {:^10} | {:^20}|".format("Index", "Id", "Item"))
 		print(demarc)
-		for index in range(len(customers.recordArray)):
+		for index in range(len(customers.nodeArray)):
 			print("|{index:^10} | {id:^10} | {item:^20}|".format(index = ""+ str(index) + "", 
-				id = customers.recordArray[index].idCol,
-				item = customers.recordArray[index].data))
+				id = customers.nodeArray[index].idCol,
+				item = customers.nodeArray[index].data))
 		print(demarc, "\n")
 	else:
 		queries = query.split(":")
