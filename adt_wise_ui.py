@@ -1,7 +1,9 @@
 import adt_wise_logic as logic
 import os, copy
 from cmd import Cmd
-	
+
+# Debug from scratch ...
+
 # Turn on for debugging purposes
 noPosting = False
 
@@ -20,15 +22,8 @@ def parse(log):
 
 	return content
 
-def getADTType(obj):
-	index = dict(logic.fetchIndex())
-
-	for key in index.keys():
-		if obj.getName() == key:
-			return index[key]
-			
-	else:
-		return None
+def getADTTypeFromObjName(adtName):
+	return logic.getADTTypeFromName(adtName)
 
 class ADTObjectHandler:
 	def __init__(self, object):
@@ -40,7 +35,7 @@ class ADTObjectHandler:
 		self.__object = copy.deepcopy(object)
 
 		# Finds the object's type 
-		self.__ADTType = getADTType(self.__object)
+		self.__ADTType = getADTTypeFromObjName(self.__object.getName())
 
 		# Title text for the embedded prompt
 		self.__title = "{adt}: {name}.".format(adt=self.__ADTType.title() , name=self.__object.getName())
@@ -52,7 +47,7 @@ class ADTObjectHandler:
 		# Dictionary of prompts for a command {<cmd-name>: []}
 		self.__promptsInfo = self.__object.getInputPrompts()
 
-		self.__availableADTs =  logic.getavailableADTs()
+		self.__availableADTs =  logic.getavailableADTCallNames()
 
 		# Whether or not pointers need to be parsed
 		self.__usesPointers = self.__object.usesPointers
@@ -81,7 +76,7 @@ class ADTObjectHandler:
 			if cmd in self.__methodCalls:
 				funcToRun = self.__availableMethods[cmd]
 
-				# Checks the promptsInfo dictionary for a key with name matching the cmd.
+				# Checks the prompts info dictionary for a key with name matching the cmd.
 				prompts = self.__promptsInfo.get(cmd, None)
 
 				# If no values need to be prompted for a function
@@ -135,17 +130,19 @@ class ADTObjectHandler:
 
 
 			elif cmd == "help":
-				print(obj.__doc__)
+				print(self.__object.__doc__())
 				print("For current purposes, the available commands are:\n")
-				for command in methodCalls:
+				for command in self.__methodCalls:
 
 					# Casing the print right
 					thisCommand = command.title()
 					
 					# Reading command info from docstring
-					info = availableMethods[command].__doc__ or ''
+					info = self.__availableMethods[command].__doc__ or '' 
 
 					print(thisCommand + "\n\t" + info)
+
+				input("Press enter to continue...")
 
 			elif cmd == "exit":
 				print("Saving modifications...")
@@ -278,18 +275,14 @@ class ADTObjectHandler:
 
 		input("Press enter to continue... ")
 
-def fetchADTMethodsList():
-	pass
-
-typeOfADT = "queue"
 
 class adt_wise_ui(Cmd):
 	# def __init__
 
 	maxNumOfPrompts = 3
 
-	availableADTTypes = logic.getavailableADTs()
-	existingObjects = logic.fetchIndex()
+	availableADTTypes = logic.getavailableADTCallNames()
+	existingObjects = logic.fetchAllADTObjNames()
 
 	maxNumOfNodes = 12
 	minNumOfNodes = 3
@@ -304,14 +297,13 @@ class adt_wise_ui(Cmd):
 		else:
 			nameOfObj =  input("Enter the name (Case-Sensitive) of the ADT to load. :> ")
 
-		# dict( [[<key>, <value>], ] ) => {<key>: <value>, }
-		objNames = dict( logic.fetchIndex() ).keys()
+		objNames = logic.fetchAllADTObjNames()
 
 		if nameOfObj not in objNames:
 			print("An object with that name does not exist.")
 
 		else:
-			objToUse = logic.retrieveObj(nameOfObj)
+			objToUse = logic.retrieveADTObjectByName(nameOfObj)
 
 			# Creates an object handler for the object and runs the internal loop
 			ADTObjectHandler(objToUse).internalLoop()
@@ -343,10 +335,9 @@ class adt_wise_ui(Cmd):
 			row = placeholderTemplate.format(ADTName = "", ADTType = "")
 			print(row)
 		else:
-			for pair in self.existingObjects:
+			for objName in self.existingObjects:
 
-				objName = pair[0]
-				typeOfObj = pair[1]
+				typeOfObj = getADTTypeFromObjName(objName)
 
 				row = placeholderTemplate.format(ADTName = objName, ADTType = typeOfObj)
 				print(row)
@@ -356,7 +347,7 @@ class adt_wise_ui(Cmd):
 	def validTypeOfADT(self, typeOfADT):
 		"""If valid returns True, else returns an error message """
 
-		if typeOfADT in self.availableADTTypes.keys():
+		if typeOfADT in self.availableADTTypes:
 			return True
 		else:
 			return "{} is not a supported type of ADT. Choose one from the available types.".format(typeOfADT)
@@ -364,7 +355,7 @@ class adt_wise_ui(Cmd):
 	def validADTName(self, name):
 		"""If valid returns True, else returns an error message """
 		
-		if name in dict( self.existingObjects ).keys():
+		if name in self.existingObjects:
 			return("An ADT with ths name already exists. Try another name.")
 
 		elif len(name) > self.maxPermissibleLengthOfName:
@@ -400,7 +391,7 @@ class adt_wise_ui(Cmd):
 			for i in range(self.maxNumOfPrompts):
 
 				print("The following types of ADT are available:\n")
-				for ADTType in self.availableADTTypes.keys():
+				for ADTType in self.availableADTTypes:
 					typeOfADT = ADTType.title()
 
 					print("{type:>4}".format(type=typeOfADT) )
@@ -458,7 +449,7 @@ class adt_wise_ui(Cmd):
 				print("You have responded incorrectly 3 times. Exiting prompt...")
 			else:
 				logic.createADT(name, typeOfADT, nodeCount)
-				self.existingObjects = logic.fetchIndex()
+				self.existingObjects = logic.fetchAllADTObjNames()
 
 		elif len(arguments) == 3:
 
@@ -484,7 +475,7 @@ class adt_wise_ui(Cmd):
 		if not invalidEntry:
 			logic.createADT(name, typeOfADT, nodeCount)
 
-			self.existingObjects = logic.fetchIndex()
+			self.existingObjects = logic.fetchAllADTObjNames()
 
 		else:
 			print("Either provide no arguments or exactly 3 valid ones seperated by spaces.")

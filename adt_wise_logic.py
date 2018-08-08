@@ -3,6 +3,8 @@ from adt_hash_tables import HashTable
 
 import adt_wise_data as data
 
+# Call names would be names used to refer to an ADT, for eg: queue
+
 # Link call name to ADT class here
 ADTS = {"queue": Queue, "hash table": HashTable}
 
@@ -66,44 +68,36 @@ class undoGroup:
 	def getMostRecentAddition(self):
 		pass
 
-def fetchIndex():
-	"""Returns [[<adt-name>, <adt-type>], ]"""
-	return data.loadIndex()
+def fetchAllADTObjNames():
+	"""Returns [<user-designated-adt-name>, ]"""
+	return data.loadAllADTNames()
+
+def getADTTypeFromName(adtName):
+	if adtName in fetchAllADTObjNames():
+		return data.loadAllADTTypes()[adtName]
+	else:
+		return None
 
 def getavailableADTCallNames():
 	"""Returns [<adt-call-name>, ]"""
 	return list(ADTS.keys())
 
-def getADTFromCallName(adtCallName):
-	if adtCallName in getavailableADTs():
+def getADTClassFromCallName(adtCallName):
+	if adtCallName in getavailableADTCallNames():
 		return ADTS[adtCallName]
 	else:
 		return None
 
+def retrieveADTObjectByName(adtName):
+	"""Returns [<adtName>, ] """
+	if adtName in fetchAllADTObjNames():
+		return data.loadObj(adtName)
 
-def retrieveAllAvailableObjs():
-	"""Returns {<obj_name>: <obj>,} """
-
-	availableObjs = {}
-
-	objList = fetchIndex()
-	for objName in objList.keys():
-		obj = data.loadObj(objName)
-		availableObjs[objName] = obj
-
-	return availableObjs
-
-def retrieveObj(objName):
-	return data.loadObj(objName)
-
+	else:
+		return None
 
 def createADT(nameOfADT, typeOfADT, numberOfNodes):
-	thisObj = getavailableADTs()[typeOfADT](nameOfADT, numberOfNodes)
+	thisObj = getADTClassFromCallName(typeOfADT)(nameOfADT, numberOfNodes)
 		
 	data.dumpObject(nameOfADT, thisObj)
 	data.updateIndex(nameOfADT, typeOfADT)
-
-
-
-
- 

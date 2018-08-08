@@ -136,14 +136,14 @@ class HashTable:
 		
 		# Prompt for value
 			{"promptMsg": "Enter item to be inserted", 
-			"validator": #####################
+			"validator": lambda x: None,
 			"valueName": "dataForNewEntry"}
 		]
 
 		prompts["search"] = [
 		# Prompt for ID
 			{"promptMsg": "Enter ID to be searched for", 
-			"validator": #####################
+			"validator": lambda x: None,
 			"valueName": "itemToBeSearched"}
 		]
 

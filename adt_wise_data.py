@@ -7,22 +7,28 @@ TODO - Implementing objectStore through SQLite3
 Index through json
 """
 
-index = [] # Represents index File
+adtNames = [] # Index File
+adtType = {} # Index File
 objectStore = {} # Represents database
 
 def loadObj(name):
 	# Modify to read form database
 	return objectStore[name]
 
-def loadIndex():
+def loadAllADTNames():
 	# Modify to read from file
-	return index
+	return adtNames
+
+def loadAllADTTypes():
+	# Modify to read from file
+	return adtType
 
 def dumpObject(name, obj):
 	objectStore[name] = obj
 
 def updateIndex(name, ADTtype):
-	index.append([name, ADTtype])
+	adtNames.append(name)
+	adtType[name] = ADTtype
 
 def _fetchBaseAddress():
 	try:
