@@ -1,10 +1,10 @@
-from ADTs.adt_queue import queue
+from adt_queue import Queue
+from adt_hash_tables import HashTable
+
 import adt_wise_data as data
 
-"""DONOT WORRY ABOUT VALIDATION RIGHT NOW! Have some faith in yourself! 
-	Forgo error responses right now!
-
-"""
+# Link call name to ADT class here
+ADTS = {"queue": Queue, "hash table": HashTable}
 
 class undoNode:
 	def __init__(self):
@@ -70,9 +70,16 @@ def fetchIndex():
 	"""Returns [[<adt-name>, <adt-type>], ]"""
 	return data.loadIndex()
 
-def getavailableADTs():
-	"""Returns {<adt-call-name>: <adt-class>, }"""
-	return {"queue" : queue}
+def getavailableADTCallNames():
+	"""Returns [<adt-call-name>, ]"""
+	return list(ADTS.keys())
+
+def getADTFromCallName(adtCallName):
+	if adtCallName in getavailableADTs():
+		return ADTS[adtCallName]
+	else:
+		return None
+
 
 def retrieveAllAvailableObjs():
 	"""Returns {<obj_name>: <obj>,} """

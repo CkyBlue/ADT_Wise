@@ -1,12 +1,10 @@
 import adt_wise_logic as logic
 import os, copy
 from cmd import Cmd
-
-"""TODO - Add undo
-Add a delete function
-Implement persistent storage of created ADTs
-"""
 	
+# Turn on for debugging purposes
+noPosting = False
+
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -35,6 +33,8 @@ def getADTType(obj):
 class ADTObjectHandler:
 	def __init__(self, object):
 		"""Uses an ADT object which is input as parameter to build an embeded interface."""
+
+		self.skipThroughPostings = noPosting
 
 		# ADT object
 		self.__object = copy.deepcopy(object)
@@ -106,12 +106,15 @@ class ADTObjectHandler:
 
 							valid = prompt["validator"](val)
 
-							if valid:
+							if valid == True: # If validator return True
 								kwargs[keyName] = val
 								break
 
-							else:
-								print(prompt["errorMsg"])
+							else: # Validator returns error message
+
+								errorMessage = valid
+								print(errorMessage)
+								
 								count += 1
 
 								if count >= 3:
@@ -126,7 +129,7 @@ class ADTObjectHandler:
 						response = funcToRun(**kwargs)
 
 						clear()
-						print(parse(response) + "\n")
+						print(parse(response))
 						input("Press enter to continue... ")
 						clear()
 
@@ -155,7 +158,7 @@ class ADTObjectHandler:
 	def embeddedPrompt(self):
 		"""The internal prompt which is used when handling an object which can be invoked from with adt 
 		Parameters: Text to be displayed as title, The object to be used for display"""
-		
+
 		clear()
 
 		print(self.__title)		
@@ -261,6 +264,9 @@ class ADTObjectHandler:
 		print(demarc)
 
 	def refresherPrompt(self):
+		if self.skipThroughPostings: # If post should be short-circuited
+			return None
+
 		clear()
 
 		self.embeddedPrompt()

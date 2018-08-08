@@ -1,32 +1,39 @@
 """Methods that need to avilable for access through call names
 need to be appended appropriately to the getMethods function.
 
-If the function needs arguments, the prompt, validator and error-message need
+If the function needs arguments, the prompt, validator and the argument name need
 to be served through the getInputPrompts function.
+
+The validator returns True if valid, else the error message
 
 Each function shows its working through a real-time log
 Information is added to the log through the function self.post(<Info-String>)
 Each time self.__refresh is fired the info in the log is displayed
 
-The return of each function is a list of strings
+The return of each function, conventionally msg, is a list of strings
 it serves as the response message
-It is handled somewhat differently from logs
+It is handled differently from logs
 
-The action detailed in the log should fire after the refresh so that 
-changes mentioned are only observed when pressing enter brings the
+If action is detailed in the log, it should fire after the refresh so that 
+actions mentioned in the log are only observed when pressing enter brings the
 next refresh and user can follow the change more easily by 
 knowing where to look 
 
 The info that shows up through 'help <command-name>'
 is the doc-string
-"""
+
+The arguments that the methods with call names receive 
+are meant to be string."""
+
+## TODO - Get remove through the post treatment
+## Add elaboration to __doc___
 
 class node:
 	def __init__(self):
 		self.item = ""
 		self.pointer = -1
 
-class queue:
+class Queue:
 	def post(self, content):
 		self.__log.append(content)
 
@@ -84,6 +91,17 @@ class queue:
 	def getName(self):
 		return self.__name
 
+	def isValidItem(self, item):
+
+		if len(item) > 20:
+			return "The item must be shorter than 20 letters."
+
+		if not item.replace(" ", "").isalnum():
+			return "Aside from spaces, the item must contain only alpha-numeric characters."
+
+		else:
+			return True
+
 	def getInputPrompts(self):
 		"""Returns data that allows the user interface to send data properly to functions that need arguments"""
 
@@ -92,24 +110,14 @@ class queue:
 		# The dictionary is inside an array so that if a single command need multiple values, the existing system permits
 		# valueName must match the name of the parameter for the function
 
-		prompts["insert"] = [
-
-		{"promptMsg": "Enter item to be inserted", 
-		"validator": lambda x: len(x) <= 20 and x.replace(" ", "").isalnum(), # Anonymous func for validation
-		"errorMsg": "The item must be shorter than 20 letters, \nand aside from spaces must contain only alpha-numeric characters.",
-		"valueName": "itemToBeInserted"
-
-		}
+		prompts["insert"] = [{"promptMsg": "Enter item to be inserted", 
+			"validator": self.isValidItem, 
+			"valueName": "itemToBeInserted"}
 		]
 
-		prompts["search"] = [
-
-		{"promptMsg": "Enter item to be inserted", 
-		"validator": lambda x: True, # No validation needed
-		"errorMsg": "The item must be shorter than 20 letters, \nand aside from spaces must contain only alpha-numeric characters.",
-		"valueName": "itemToBeSearched"
-
-		}
+		prompts["search"] = [{"promptMsg": "Enter item to be searched", 
+			"validator": lambda x: True, # No validation needed
+			"valueName": "itemToBeSearched"}
 		]
 
 		return prompts
@@ -208,8 +216,7 @@ class queue:
 				post("Since the pointer to the tail is to be modified, the process involving it is then handled.\n")
 
 				post("The previous tail at index {} is set to point to the current tail at {},".format(self.tailPointer,
-					currentPointer),
-					logger)
+					currentPointer))
 				post("so that when the previous tail is popped on reaching the head of the queue,")
 				post("the program will be able to read the next head from it,")
 
@@ -249,13 +256,13 @@ class queue:
 			return msg
 
 	def search(self, itemToBeSearched):
-		"""Allows for searching the queue for an item. Retrieves first instance."""
+		"""Allows for searching the queue for an item. Retrieves first instance encountered."""
 
 		msg = [] # Holds message that is displayed after the logs
 
 		# Short-hand
 		post = self.post
-		rfr = self.__refresh()
+		rfr = self.__refresh
 
 		post("Moving to the head-pointer...")
 		post("Current Pointer: {}".format(self.headPointer))
@@ -272,6 +279,12 @@ class queue:
 			rfr()
 		
 		else:
+			post("Searching thrrough the items,")
+			post("until item is found,")
+			post("or the  end is reached.")
+
+			rfr()
+
 			while currentPointer != -1 and not itemFound:
 				post("Item at current position: {}".format(self.nodeArray[currentPointer].item))
 				post("Item being searched: {}\n".format(itemToBeSearched))
@@ -280,19 +293,25 @@ class queue:
 					post("The two are the same,")
 					post("The item at {} matched.".format(currentPointer))
 
-					msg.append("The item {} was found at index {}".format(itemToBeSearched, currentPointer))
+					msg.append("The item {} was found at index {}.".format(itemToBeSearched, currentPointer))
 					itemFound = True
 
 				else:
 					post("The two do not match,")
-					post("Current node points: {}\n".format(self.nodeArray[currentPointer].pointer))
+					post("Current node points to: {}\n".format(self.nodeArray[currentPointer].pointer))
 
 					post("Moving to next node,")
 					post("Current Pointer: {}".format(self.nodeArray[currentPointer].pointer))
 					
 					currentPointer = self.nodeArray[currentPointer].pointer
 
-				rfr()
+					if currentPointer == -1:
+						rfr()
+
+						post("Current Pointer reached: {}".format(currentPointer))
+						post("Since no item exists at a index of -1,")
+						post("Breaking out of loop...")
+				rfr()			
 
 			if not itemFound:
 
@@ -315,7 +334,7 @@ class queue:
 
 		# Short-hand
 		post = self.post
-		rfr = self.__refresh()
+		rfr = self.__refresh
 
 		post("Checking eligibility...")
 		post("Head Pointer: {}".format(self.headPointer))

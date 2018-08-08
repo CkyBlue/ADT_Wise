@@ -1,19 +1,21 @@
 """Methods that need to avilable for access through call names
 need to be appended appropriately to the getMethods function.
 
-If the function needs arguments, the prompt, validator and error-message need
+If the function needs arguments, the prompt, validator and the argument name need
 to be served through the getInputPrompts function.
+
+The validator returns True if valid, else the error message
 
 Each function shows its working through a real-time log
 Information is added to the log through the function self.post(<Info-String>)
 Each time self.__refresh is fired the info in the log is displayed
 
-The return of each function is a list of strings
+The return of each function, conventionally msg, is a list of strings
 it serves as the response message
-It is handled somewhat differently from logs
+It is handled differently from logs
 
-The action detailed in the log should fire after the refresh so that 
-changes mentioned are only observed when pressing enter brings the
+If action is detailed in the log, it should fire after the refresh so that 
+actions mentioned in the log are only observed when pressing enter brings the
 next refresh and user can follow the change more easily by 
 knowing where to look 
 
@@ -24,6 +26,8 @@ The arguments that the methods with call names receive
 are meant to be string. idCol is implemented as integer so
 care should be taken when dealing with it."""
 
+## TODO - Add log postings
+## Add elaboration to __doc___
 
 class node:
 	def __init__(self):
@@ -42,9 +46,9 @@ class HashTable:
 		self.usesPointers = False
 		self.__log = []
 
-	def initializeId(self, obj): # Set all IDs initially to 0
+	def initializeId(self, obj): # Set all IDs initially to -1
 		for index in range(len(obj)):
-			obj[index].idCol = 0
+			obj[index].idCol = -1
 
 	def __doc__(self):
 		# Return the text with each element on its own separate line
@@ -78,45 +82,73 @@ class HashTable:
 	def getName(self):
 		return self.__name
 
+	def getAllIds(self):
+		return [self.nodeArray[i].idCol for i in range(self.numberOfNodes)]
+
+	def idIsValid(self, id):
+		if not id.isdigit():
+			return "The ID must be a number."
+
+		elif id <= "9999" and id >= "0":
+			return "The ID must be between 0 to 9999."
+
+		elif id in self.getAllIds():
+			return "An entry with this ID already exists."
+
+		else:
+			return True
+
+	def searchIdIsValid(self, id):
+		if not id.isdigit():
+			return "The ID must be a number."
+
+		elif id <= "9999" and id >= "0":
+			return "The ID must be between 0 to 9999."
+
+		else:
+			return True
+
+	def isValidItem(self, item):
+
+		if len(item) > 20:
+			return "The item must be shorter than 20 letters."
+
+		if not item.replace(" ", "").isalnum():
+			return "Aside from spaces, the item must contain only alpha-numeric characters."
+
+		else:
+			return True
+
 	def getInputPrompts(self):
 		"""Returns data that allows the user interface to send data properly to functions that need arguments"""
 
 		prompts = {}
 
 		# Each dictionary is the data pertaining to one input
-		# valueName must match the name of the parameter for the function
+		# valueName must match the name of the parameter for the function,
+		# eg, "valueName": "idVal" for <call-name-func>(idVal)
 
 		prompts["insert"] = [
-
 		# Prompt for ID
-		{"promptMsg": "Enter item ID <0 to 9999>", 
-
-		"validator": lambda x: x.isdigit() and x <= "9999" and x >= "0", # Anonymous func for validation
-		"errorMsg": "The ID must be numbers only \nand between 0 to 9999.",
-
-		"valueName": "idForNewEntry"
-		},
-
-		# Prompt for value
-		{"promptMsg": "Enter item to be inserted",
-
-		"validator": lambda x: len(x) <= 20 and x.replace(" ", "").isalnum(), # Anonymous func for validation
-		"errorMsg": "The item must be shorter than 20 letters, \nand aside from spaces must contain only alpha-numeric characters.",
+			{"promptMsg": "Enter item ID <0 to 9999>", 
+			"validator": self.idIsValid, 
+			"valueName": "idForNewEntry"},
 		
-		"valueName": "dataForNewEntry"
-		}
+		# Prompt for value
+			{"promptMsg": "Enter item to be inserted", 
+			"validator": #####################
+			"valueName": "dataForNewEntry"}
 		]
 
 		prompts["search"] = [
-		{"promptMsg": "Enter item to be inserted", 
-
-		"validator": lambda x: len(x) <= 20 and x.replace(" ", "").isalnum(), # Anonymous func for validation
-		"errorMsg": "The item must be shorter than 20 letters, \nand aside from spaces must contain only alpha-numeric characters.",
-		
-		"valueName": "itemToBeSearched"
-		}
+		# Prompt for ID
+			{"promptMsg": "Enter ID to be searched for", 
+			"validator": #####################
+			"valueName": "itemToBeSearched"}
 		]
 
+
+		########
 		prompts["remove"] = [
 		{"promptMsg": "Enter the ID of the entry you wish to remove", 
 		
@@ -209,7 +241,7 @@ class HashTable:
 		return msg
 
 	def search(self, idToBeSearchedFor):
-
+		"""Allows for searching the hash table for an item through its ID. Retrieves first instance."""
 		msg = [] # End message
 
 		# Short-hand
@@ -242,56 +274,7 @@ class HashTable:
 
 
 	def hash(self, key):
+		""""""
+
 		key = int(key)
 		return key % self.numberOfNodes # Gives modulus appropriate to number of nodes
-
-customers = HashTable(10)
-while True:
-	query = input("Enter query:> ")
-	if query.lower() == "exit":
-		break
-	elif query.lower() == "show":
-		print()
-		demarc = "-"*48
-		print(demarc)
-		print("|{:^10} | {:^10} | {:^20}|".format("Index", "Id", "Item"))
-		print(demarc)
-		for index in range(len(customers.nodeArray)):
-			print("|{index:^10} | {id:^10} | {item:^20}|".format(index = ""+ str(index) + "", 
-				id = customers.nodeArray[index].idCol,
-				item = customers.nodeArray[index].data))
-		print(demarc, "\n")
-	else:
-		queries = query.split(":")
-		data = queries[-1].strip()
-		cmd = queries[0].strip().lower()
-		if cmd == "insert":
-			items = data.split(",")
-			if len(items) != 2:
-				print("Insert two items, a ID and the data to be stored, seperated by a ','.")
-			elif not items[0].strip().isdigit():
-				print("IDs must be a number")
-			else:
-				idEntry = "{:0>4}".format(items[0])[-4:]
-				dataEntry = items[1]
-				customers.insert(idEntry, dataEntry)
-		elif cmd == "remove":
-			items = data.split(",")
-			if len(items) > 1:
-				print("Enter only the ID.")
-			elif not items[0].strip().isdigit():
-				print("IDs must be a number")
-			else:
-				idEntry = "{:0>4}".format(items[0])[-4:]
-				customers.remove(idEntry)	
-		elif cmd == "search":
-			items = data.split(",")
-			if len(items) > 1:
-				print("Enter only the ID.")
-			elif not items[0].strip().isdigit():
-				print("IDs must be a number")
-			else:
-				idEntry = "{:0>4}".format(items[0])[-4:]
-				customers.search(idEntry)
-		else:
-			print("Enter a valid command!")	
