@@ -49,7 +49,7 @@ class HashTable:
 	def initializeId(self, obj): # Set all IDs initially to -1
 		for index in range(len(obj)):
 			obj[index].idCol = -1
-
+###
 	def __doc__(self):
 		# Return the text with each element on its own separate line
 
@@ -66,26 +66,26 @@ class HashTable:
 				output += i
 
 		return output
-
+###
 	def setLog(self, newLog):
 		self.__log = newLog
-
+###
 	def getLog(self):
 		return self.__log
-
+###
 	def setRefresher(self, func):
 		self.__refresh = func
-
+###
 	def setName(self, name):
 		self.__name = name
-
+###
 	def getName(self):
 		return self.__name
-
+###
 	def getAllIds(self):
 		return [self.nodeArray[i].idCol for i in range(self.numberOfNodes)]
-
-	def idIsValid(self, id):
+###
+	def isIdValid(self, id):
 		if not id.isdigit():
 			return "The ID must be a number."
 
@@ -97,8 +97,8 @@ class HashTable:
 
 		else:
 			return True
-
-	def searchIdIsValid(self, id):
+####
+	def isSearchIdValid(self, id):
 		if not id.isdigit():
 			return "The ID must be a number."
 
@@ -108,17 +108,7 @@ class HashTable:
 		else:
 			return True
 
-	def isValidItem(self, item):
-
-		if len(item) > 20:
-			return "The item must be shorter than 20 letters."
-
-		if not item.replace(" ", "").isalnum():
-			return "Aside from spaces, the item must contain only alpha-numeric characters."
-
-		else:
-			return True
-
+###
 	def getInputPrompts(self):
 		"""Returns data that allows the user interface to send data properly to functions that need arguments"""
 

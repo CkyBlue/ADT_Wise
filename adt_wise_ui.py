@@ -147,6 +147,7 @@ class ADTObjectHandler:
 			elif cmd == "exit":
 				print("Saving modifications...")
 				print("Exiting ADT interface.")
+				break
 
 			else:
 				print("The command '{}' is not valid.".format(cmd))
@@ -275,7 +276,6 @@ class ADTObjectHandler:
 
 		input("Press enter to continue... ")
 
-
 class adt_wise_ui(Cmd):
 	# def __init__
 
@@ -347,7 +347,7 @@ class adt_wise_ui(Cmd):
 	def validTypeOfADT(self, typeOfADT):
 		"""If valid returns True, else returns an error message """
 
-		if typeOfADT in self.availableADTTypes:
+		if typeOfADT.lower().strip() in self.availableADTTypes:
 			return True
 		else:
 			return "{} is not a supported type of ADT. Choose one from the available types.".format(typeOfADT)
@@ -382,81 +382,81 @@ class adt_wise_ui(Cmd):
 		"""Allows for creating a new ADT."""
 
 		limitExceeded = False
+		invalidEntry = False
 
-		arguments = args.replace(",", " ").split()
+		# Process argument to split on ',' and strip elements of trailing/leading spaces
+		arguments = args.split(",")
+		arguments = list(map(lambda x: x.strip(), arguments))
 
 		if arguments == []: # If no arguments received
 
 			# Prompts for ADT Type
-			for i in range(self.maxNumOfPrompts):
+			if not limitExceeded:
+				for i in range(self.maxNumOfPrompts):
 
-				print("The following types of ADT are available:\n")
-				for ADTType in self.availableADTTypes:
-					typeOfADT = ADTType.title()
+					print("The following types of ADT are available:\n")
+					for ADTType in self.availableADTTypes:
+						typeOfADT = ADTType.title()
 
-					print("{type:>4}".format(type=typeOfADT) )
+						print("{type:>4}".format(type=typeOfADT) )
 
-				# typeOfADT
-				typeOfADT = input("\nWhat type of ADT do you want to make? ").lower().strip()
+					# typeOfADT
+					typeOfADT = input("\nWhat type of ADT do you want to make? ")
 
-				# Validation
-				valid =  self.validTypeOfADT(typeOfADT)
+					# Validation
+					valid =  self.validTypeOfADT(typeOfADT)
 
-				if valid == True:
-					break
+					if valid == True:
+						break
+					else:
+						errorMsg = valid
+						print(errorMsg)
 				else:
-					errorMsg = valid
-					print(errorMsg)
-			else:
-				limitExceeded = True
+					limitExceeded = True
 
 			# Prompts for name
-			for i in range(self.maxNumOfPrompts):
-				# name
-				name = input("What do you want to name this ADT? ")
+			if not limitExceeded:
+				for i in range(self.maxNumOfPrompts):
+					# name
+					name = input("What do you want to name this ADT? ").strip()
 
-				# Validation
-				valid =  self.validADTName(name)
+					# Validation
+					valid =  self.validADTName(name)
 
-				if valid == True:
-					break
+					if valid == True:
+						break
+					else:
+						errorMsg = valid
+						print(errorMsg)
 				else:
-					errorMsg = valid
-					print(errorMsg)
-			else:
-				limitExceeded = True
+					limitExceeded = True
 
 			# Prompts for number of nodes
 			promptText = "How many nodes do you want it to have? <{min}-{max}> ".format(min = self.minNumOfNodes, 
 				max = self.maxNumOfNodes)
-			
-			for i in range(self.maxNumOfPrompts):
-				# nodeCount
-				nodeCount = input(promptText).strip()
+			if not limitExceeded:
+				for i in range(self.maxNumOfPrompts):
+					# nodeCount
+					nodeCount = input(promptText).strip()
 
-				# Validation
-				valid =  self.validNodeCount(nodeCount)
+					# Validation
+					valid =  self.validNodeCount(nodeCount)
 
-				if valid == True:
-					break
+					if valid == True:
+						break
+					else:
+						errorMsg = valid
+						print(errorMsg)			
 				else:
-					errorMsg = valid
-					print(errorMsg)			
-			else:
-				limitExceeded = True
+					limitExceeded = True
 
 			if limitExceeded:
 				print("You have responded incorrectly 3 times. Exiting prompt...")
-			else:
-				logic.createADT(name, typeOfADT, nodeCount)
-				self.existingObjects = logic.fetchAllADTObjNames()
+				invalidEntry = True
 
-		elif len(arguments) == 3:
+		elif len(arguments) == 3: # If 3 arguments received
 
 			typeOfADT, name, nodeCount = arguments
-			typeOfADT = typeOfADT.lower().strip()
-
-			invalidEntry = False
 
 			for value, validator in [[typeOfADT, self.validTypeOfADT],
 				[name, self.validADTName],
@@ -471,14 +471,20 @@ class adt_wise_ui(Cmd):
 					print(errorMsg)	
 
 					invalidEntry = True
-	
-		if not invalidEntry:
-			logic.createADT(name, typeOfADT, nodeCount)
-
-			self.existingObjects = logic.fetchAllADTObjNames()
 
 		else:
-			print("Either provide no arguments or exactly 3 valid ones seperated by spaces.")
+			invalidEntry = True
+	
+		# Build ADT or give error message
+		if not invalidEntry:
+			# ADT Call names are stored in lower-case
+			typeOfADT = typeOfADT.lower().strip()
+
+			logic.createADT(name, typeOfADT, nodeCount)
+			self.existingObjects = logic.fetchAllADTObjNames()
+
+		elif len(arguments) not in [0, 3]:
+			print("Either provide no arguments or exactly 3 valid ones seperated by commas.")
 
 def start():
 	promptLoop = adt_wise_ui()
