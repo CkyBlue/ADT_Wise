@@ -32,30 +32,27 @@ class ADTObjectHandler:
 		self.skipThroughPostings = noPosting
 
 		# ADT object
-		self.__object = copy.deepcopy(object)
+		self.object = copy.deepcopy(object)
 
 		# Finds the object's type 
-		self.__ADTType = getADTTypeFromObjName(self.__object.getName())
+		self.ADTType = getADTTypeFromObjName(self.object.name)
 
 		# Title text for the embedded prompt
-		self.__title = "{adt}: {name}.".format(adt=self.__ADTType.title() , name=self.__object.getName())
-		self.__title += "\nType in a command, 'help' or 'exit'.\n"
+		self.title = "{adt}: {name}.".format(adt=self.ADTType.title() , name=self.object.name)
+		self.title += "\nType in a command, 'help' or 'exit'.\n"
 
-		self.__availableMethods = self.__object.getMethods() # Dictionary {<callName> : <function>}
-		self.__methodCalls = self.__availableMethods.keys()
+		self.availableMethods = self.object.calls # List
 
 		# Dictionary of prompts for a command {<cmd-name>: []}
-		self.__promptsInfo = self.__object.getInputPrompts()
-
-		self.__availableADTs =  logic.getavailableADTCallNames()
+		self.promptsInfo = self.object.getInputPrompts()
 
 		# Whether or not pointers need to be parsed
-		self.__usesPointers = self.__object.usesPointers
+		self.usesPointers = self.object.usesPointers
 
-		self.__keyForPrompt = ":>>"
+		self.keyForPrompt = ":>>"
 
 		# Set refresher function
-		self.__object.setRefresher(self.refresherPrompt)
+		self.object.refresh = self.refresherPrompt
 
 	def internalLoop(self):
 		while True:
@@ -63,7 +60,7 @@ class ADTObjectHandler:
 			# Embedded prompt is displayed
 			self.embeddedPrompt()
 
-			userInput = input("{} ".format(self.__keyForPrompt))
+			userInput = input("{} ".format(self.keyForPrompt))
 
 			# " CMD  now" -> "cmd"
 			cmd = userInput.lower().split()
@@ -73,14 +70,20 @@ class ADTObjectHandler:
 				cmd = ""
 
 			# Evaluate input
-			if cmd in self.__methodCalls:
-				funcToRun = self.__availableMethods[cmd]
+			if cmd in self.availableMethods:
+				funcToRun = self.object.getMethod(cmd)
+
+				if funcToRun == None:
+					print("Call registered without designated function.")
+					continue
 
 				# Checks the prompts info dictionary for a key with name matching the cmd.
-				prompts = self.__promptsInfo.get(cmd, None)
+				prompts = self.promptsInfo.get(cmd, None)
 
 				# If no values need to be prompted for a function
 				if prompts == None:
+
+					# GUI needs another thread to run this
 					response = funcToRun()
 					print(response, end = "")
 
@@ -121,24 +124,29 @@ class ADTObjectHandler:
 							break
 
 					if not limitExceeded: # If evrything is valid
+						# GUI needs another thread to run this
 						response = funcToRun(**kwargs)
 
 						clear()
-						print(parse(response))
+
+						if response:
+							print(parse(response))
+
 						input("Press enter to continue... ")
 						clear()
 
 
 			elif cmd == "help":
-				print(self.__object.__doc__())
+				print(self.object.__doc__())
 				print("For current purposes, the available commands are:\n")
-				for command in self.__methodCalls:
+
+				for callName in self.availableMethods:
 
 					# Casing the print right
-					thisCommand = command.title()
+					thisCommand = callName.title()
 					
 					# Reading command info from docstring
-					info = self.__availableMethods[command].__doc__ or '' 
+					info = self.obj.getMethod(thisCommandi).__doc__ or '' 
 
 					print(thisCommand + "\n\t" + info)
 
@@ -159,10 +167,10 @@ class ADTObjectHandler:
 
 		clear()
 
-		print(self.__title)		
+		print(self.title)		
 		self.displayValuesWithinADT()
 
-		if self.__usesPointers:
+		if self.usesPointers:
 			print()
 			self.displayPointersWithinADT()
 
@@ -170,7 +178,7 @@ class ADTObjectHandler:
 
 	def displayValuesWithinADT(self):
 		# Returns a list [ {<heading>: {<attr>: <val>, } }, ]
-		obj = self.__object
+		obj = self.object
 
 		numberOfHeadings = len(obj.dataItems)
 
@@ -192,7 +200,6 @@ class ADTObjectHandler:
 			# and sets up variables used for controlling output
 
 			keyName = heading
-
 			width = obj.dataItemsWidth[heading]
 
 			placeholderTemplate += "{" + keyName + ":^" + str(width) + "}|"
@@ -211,6 +218,7 @@ class ADTObjectHandler:
 			# Builds a dictionary for formatting
 			for heading in obj.dataItems:
 
+				# Returns function which processes value fetching for a certain node index
 				retrfunc = obj.dataItemsRetrievingFunc[heading]
 				parametersForRows[heading] = retrfunc(nodeIndex)
 				parametersForRows["Index"] = nodeIndex
@@ -220,8 +228,7 @@ class ADTObjectHandler:
 		print(demarc)
 					
 	def displayPointersWithinADT(self):
-		# Returns a list [{<Pointer Namw>: <Pointer Value> }, ]
-		pointers = self.__object.getSpecialPointers() 
+		pointers = self.object.getSpecialPointersName() # List
 
 		numberOfPointers = len(pointers)
 
@@ -251,10 +258,10 @@ class ADTObjectHandler:
 
 		# Body
 		for pointer in pointers: 
-			# Grabs the pointer name for the entry, there is only one key
+			# Grabs the pointer name for the entry
 			pointerName = pointer
 
-			pointerValue = self.__object.getPointersValue(pointer)
+			pointerValue = self.object.getSpecialPointersValue(pointer)
 
 			parametersForRows = {"PointerName": pointerName, "Value": pointerValue}
 			print(placeholderTemplate.format(**parametersForRows))
@@ -269,10 +276,10 @@ class ADTObjectHandler:
 
 		self.embeddedPrompt()
 
-		logString = parse(self.__object.getLog())
+		logString = parse(self.object.log)
 		print(logString)
 
-		self.__object.setLog([])
+		self.object.resetLog()
 
 		input("Press enter to continue... ")
 
@@ -385,10 +392,11 @@ class adt_wise_ui(Cmd):
 		invalidEntry = False
 
 		# Process argument to split on ',' and strip elements of trailing/leading spaces
+
 		arguments = args.split(",")
 		arguments = list(map(lambda x: x.strip(), arguments))
 
-		if arguments == []: # If no arguments received
+		if arguments == ['']: # If no arguments received
 
 			# Prompts for ADT Type
 			if not limitExceeded:

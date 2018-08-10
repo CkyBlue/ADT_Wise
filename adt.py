@@ -25,10 +25,9 @@ is the doc-string
 The arguments that the methods with call names receive 
 are meant to be string."""
 
-## TODO - Get remove through the post treatment
-## Add elaboration to __doc___
+## TODO - Add validation to methods
 
-class node:
+class linkNode:
 	def __init__(self):
 		self.item = ""
 		self.pointer = -1
@@ -53,37 +52,54 @@ class ADT:
 
 		return output
 
-	def __init__(self, name, length, pointers):
+	def addToDisplayData(self, name, width, retrFunc):
+		"""Extends the data the ADT provides for the ADT's representation in the UI
+		Parameter: Name of the header, 
+			Width to be allocated for the col corresponding to this attribute,
+			Function which takes in index as parameter to give the value for each index
+		"""
+
+		self.dataItems.append(name)
+		self.dataItemsWidth[name] = width
+		self.dataItemsRetrievingFunc[name] = retrFunc
+
+	def __init__(self, name, length, utilizesPointers):
 
 		self.name = name
 		self.numberOfNodes = int(length)
 
 		self.refresh = (lambda: None)
 		
-		self.dataItems = ["Item", "Pointer"]
-		self.dataItemsWidth = {"Item": 20, "Pointer": 10}
-		self.dataItemsRetrievingFunc = {"Item": self.getItem}
+		self.dataItems = []
+		self.dataItemsWidth = {}
+		self.dataItemsRetrievingFunc = {}
 
-		if pointers: # Uses pointers?
+		## You may need to use/modify this in sub-classes
+		self.addToDisplayData("Item", 20, self.getItem)
 
-			self.usesPointers = True
+		self.usesPointers = utilizesPointers
+
+		if self.usesPointers: # Uses pointers?
 
 			self.pointerNameToProp = {}
 			self.pointersName = []
 
-			self.dataItemsRetrievingFunc["Pointer"] = self.getPointer
-		
+			self.pointers = []
+
+			self.addToDisplayData("Pointer", 10, self.getPointer)
 
 		self.log = []
 
 		# Names used to invoke functions against corresponding methods
+		## You may need to use/modify this in sub-classes
+		self.calls = ["insert", "search", "remove"]
 
-		self.calls = {"insert": self.insert, 
+		self.callsToFunc = {"insert": self.insert, 
 		"search": self.search,
 		"remove": self.remove}
 
 		# Input prompts for the functions that are associated with commands that can be invoked from the UI
-
+		## You may need to use/modify this in sub-classes
 		self.prompts = {}
 
 		# The dictionary is inside an array so that if a single command need multiple values, the existing system permits
@@ -118,7 +134,6 @@ class ADT:
 
 	def getInputPrompts(self):
 		"""Returns data that allows the user interface to send data properly to functions that need arguments"""
-		-
 		return self.prompts
 
 	def __str__(self):
@@ -127,14 +142,17 @@ class ADT:
 	def getSpecialPointersName(self):
 		return self.pointers
 
-	def getPointersValue(self, pointerName):
-		return self.pointerNameToProp[pointerName]
+	def getSpecialPointersValue(self, pointerName):
+		if pointerName in self.pointers:
+			return self.pointerNameToProp[pointerName]
 
-	def getMethods(self):
+	def getMethod(self, callName):
 		"""Returns a dictionary with call name for keys, 
 		the function associated for values.
 		"""
-		return self.calls
+
+		if callName in self.calls:
+			return self.callsToFunc[callName]
 
 	def getItem(self, index):
 		return self.nodeArray[index].item
@@ -142,7 +160,7 @@ class ADT:
 	def getPointer(self, index):
 		return self.nodeArray[index].pointer
 		
-	def __initialize(self, obj):
+	def initialize(self, obj):
 		lenght = len(obj)
 
 		for index in range(lenght):

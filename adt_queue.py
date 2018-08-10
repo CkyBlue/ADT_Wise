@@ -1,9 +1,6 @@
-class node:
-	def __init__(self):
-		self.item = ""
-		self.pointer = -1
+import adt
 
-class Queue:
+class Queue(adt.ADT):
 
 	def __doc__(self):
 		text = ["A queue is an abstract data type",
@@ -12,111 +9,28 @@ class Queue:
 		"Add more elaboration later..."
 		]
 
-		output = ""
-
-		for i in text:
-			if i != (len(text) - 1) :
-				output += i + "\n"
-			else:
-				output += i
-
-		return output
+		return super().__doc__(text)
 
 	def __init__(self, name, length):
+		super().__init__(name, length, True) # pointer = True
 
-		self.__name = name
-		self.numberOfNodes = int(length)
-
-		self.__refresh = (lambda: None)
-
-		self.usesPointers = True
-
-		self.nodeArray = [node() for i in range(int(self.numberOfNodes))]
-		self.__initialize(self.nodeArray)
+		# Queue's pointers
 
 		self.freePointer = 0
 		self.headPointer = -1
 		self.tailPointer = -1
 
-		self.dataItems = ["Item", "Pointer"]
-		self.dataItemsWidth = {"Item": 20, "Pointer": 10}
-		self.dataItemsRetrievingFunc = {"Item": self.getItem, "Pointer": self.getPointer}
+		# Queue's node array
 
-		self.__log = []
+		self.nodeArray = [adt.linkNode() for i in range(self.numberOfNodes)]
+		self.initialize(self.nodeArray)
 
-	def setLog(self, newLog):
-		self.__log = newLog
+		# Overwrite
 
-	def getLog(self):
-		return self.__log
-
-	def setRefresher(self, func):
-		self.__refresh = func
-
-	def setName(self, name):
-		self.__name = name
-
-	def getName(self):
-		return self.__name
-
-	def isValidItem(self, item):
-
-		if len(item) > 20:
-			return "The item must be shorter than 20 letters."
-
-		if not item.replace(" ", "").isalnum():
-			return "Aside from spaces, the item must contain only alpha-numeric characters."
-
-		else:
-			return True
-
-	def getInputPrompts(self):
-		"""Returns data that allows the user interface to send data properly to functions that need arguments"""
-
-		prompts = {}
-
-		# The dictionary is inside an array so that if a single command need multiple values, the existing system permits
-		# valueName must match the name of the parameter for the function
-
-		prompts["insert"] = [{"promptMsg": "Enter item to be inserted", 
-			"validator": self.isValidItem, 
-			"valueName": "itemToBeInserted"}
-		]
-
-		prompts["search"] = [{"promptMsg": "Enter item to be searched", 
-			"validator": lambda x: True, # No validation needed
-			"valueName": "itemToBeSearched"}
-		]
-
-		return prompts
-
-	def __str__(self):
-		return self.__name
-
-	def getSpecialPointers(self):
-		pointers = ["Free Pointer", "Head Pointer", "Tail Pointer"]
-		return pointers
-
-	def getPointersValue(self, pointer):
-		valuesDict = {"Free Pointer": self.freePointer,
-		"Head Pointer": self.headPointer, 
-		"Tail Pointer": self.tailPointer}
-		return valuesDict[pointer]
-
-	def getMethods(self):
-		"""Returns a dictionary with call name for keys, 
-		the function associated for values.
-		"""
-
-		return {"insert": self.insert, 
-		"search": self.search,
-		"remove": self.remove}
-
-	def getItem(self, index):
-		return self.nodeArray[index].item
-
-	def getPointer(self, index):
-		return self.nodeArray[index].pointer
+		self.pointers = ["Free Pointer", "Head Pointer", "Tail Pointer"]
+		self.pointerNameToProp = {"Free Pointer": self.freePointer, 
+			"Head Pointer": self.headPointer, 
+			"Tail Pointer": self.tailPointer}
 
 	def insert(self, itemToBeInserted):
 		"""Allows for adding an item to the tail of the queue if it is not full."""
@@ -127,7 +41,7 @@ class Queue:
 
 		# Short-hand
 		post = self.post
-		rfr = self.__refresh
+		rfr = self.refresh
 
 		post("Checking eligibility...")
 		post("Free Pointer: {}".format(self.freePointer))
@@ -223,7 +137,7 @@ class Queue:
 
 		# Short-hand
 		post = self.post
-		rfr = self.__refresh
+		rfr = self.refresh
 
 		post("Moving to the head-pointer...")
 		post("Current Pointer: {}".format(self.headPointer))
@@ -293,9 +207,11 @@ class Queue:
 
 		msg = [] # Holds message that is displayed after the logs
 
+		## Add postings
+
 		# Short-hand
 		post = self.post
-		rfr = self.__refresh
+		rfr = self.refresh
 
 		post("Checking eligibility...")
 		post("Head Pointer: {}".format(self.headPointer))
