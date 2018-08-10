@@ -2,11 +2,11 @@ import adt_wise_logic as logic
 import os, copy
 from cmd import Cmd
 
-"""TODO - Add undo
-Add a delete function
-Implement persistent storage of created ADTs
-"""
-	
+# Debug from scratch ...
+
+# Turn on for debugging purposes
+noPosting = False
+
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -22,45 +22,37 @@ def parse(log):
 
 	return content
 
-def getADTType(obj):
-	index = dict(logic.fetchIndex())
-
-	for key in index.keys():
-		if obj.getName() == key:
-			return index[key]
-			
-	else:
-		return None
+def getADTTypeFromObjName(adtName):
+	return logic.getADTTypeFromName(adtName)
 
 class ADTObjectHandler:
 	def __init__(self, object):
 		"""Uses an ADT object which is input as parameter to build an embeded interface."""
 
+		self.skipThroughPostings = noPosting
+
 		# ADT object
-		self.__object = copy.deepcopy(object)
+		self.object = copy.deepcopy(object)
 
 		# Finds the object's type 
-		self.__ADTType = getADTType(self.__object)
+		self.ADTType = getADTTypeFromObjName(self.object.name)
 
 		# Title text for the embedded prompt
-		self.__title = "{adt}: {name}.".format(adt=self.__ADTType.title() , name=self.__object.getName())
-		self.__title += "\nType in a command, 'help' or 'exit'.\n"
+		self.title = "{adt}: {name}.".format(adt=self.ADTType.title() , name=self.object.name)
+		self.title += "\nType in a command, 'help' or 'exit'.\n"
 
-		self.__availableMethods = self.__object.getMethods() # Dictionary {<callName> : <function>}
-		self.__methodCalls = self.__availableMethods.keys()
+		self.availableMethods = self.object.calls # List
 
 		# Dictionary of prompts for a command {<cmd-name>: []}
-		self.__promptsInfo = self.__object.getInputPrompts()
-
-		self.__availableADTs =  logic.getavailableADTs()
+		self.promptsInfo = self.object.getInputPrompts()
 
 		# Whether or not pointers need to be parsed
-		self.__usesPointers = self.__object.usesPointers
+		self.usesPointers = self.object.usesPointers
 
-		self.__keyForPrompt = ":>>"
+		self.keyForPrompt = ":>>"
 
 		# Set refresher function
-		self.__object.setRefresher(self.refresherPrompt)
+		self.object.refresh = self.refresherPrompt
 
 	def internalLoop(self):
 		while True:
@@ -68,7 +60,7 @@ class ADTObjectHandler:
 			# Embedded prompt is displayed
 			self.embeddedPrompt()
 
-			userInput = input("{} ".format(self.__keyForPrompt))
+			userInput = input("{} ".format(self.keyForPrompt))
 
 			# " CMD  now" -> "cmd"
 			cmd = userInput.lower().split()
@@ -78,14 +70,20 @@ class ADTObjectHandler:
 				cmd = ""
 
 			# Evaluate input
-			if cmd in self.__methodCalls:
-				funcToRun = self.__availableMethods[cmd]
+			if cmd in self.availableMethods:
+				funcToRun = self.object.getMethod(cmd)
 
-				# Checks the promptsInfo dictionary for a key with name matching the cmd.
-				prompts = self.__promptsInfo.get(cmd, None)
+				if funcToRun == None:
+					print("Call registered without designated function.")
+					continue
+
+				# Checks the prompts info dictionary for a key with name matching the cmd.
+				prompts = self.promptsInfo.get(cmd, None)
 
 				# If no values need to be prompted for a function
 				if prompts == None:
+
+					# GUI needs another thread to run this
 					response = funcToRun()
 					print(response, end = "")
 
@@ -106,12 +104,15 @@ class ADTObjectHandler:
 
 							valid = prompt["validator"](val)
 
-							if valid:
+							if valid == True: # If validator return True
 								kwargs[keyName] = val
 								break
 
-							else:
-								print(prompt["errorMsg"])
+							else: # Validator returns error message
+
+								errorMessage = valid
+								print(errorMessage)
+								
 								count += 1
 
 								if count >= 3:
@@ -123,30 +124,38 @@ class ADTObjectHandler:
 							break
 
 					if not limitExceeded: # If evrything is valid
+						# GUI needs another thread to run this
 						response = funcToRun(**kwargs)
 
 						clear()
-						print(parse(response) + "\n")
+
+						if response:
+							print(parse(response))
+
 						input("Press enter to continue... ")
 						clear()
 
 
 			elif cmd == "help":
-				print(obj.__doc__)
+				print(self.object.__doc__())
 				print("For current purposes, the available commands are:\n")
-				for command in methodCalls:
+
+				for callName in self.availableMethods:
 
 					# Casing the print right
-					thisCommand = command.title()
+					thisCommand = callName.title()
 					
 					# Reading command info from docstring
-					info = availableMethods[command].__doc__ or ''
+					info = self.obj.getMethod(thisCommandi).__doc__ or '' 
 
 					print(thisCommand + "\n\t" + info)
+
+				input("Press enter to continue...")
 
 			elif cmd == "exit":
 				print("Saving modifications...")
 				print("Exiting ADT interface.")
+				break
 
 			else:
 				print("The command '{}' is not valid.".format(cmd))
@@ -155,13 +164,13 @@ class ADTObjectHandler:
 	def embeddedPrompt(self):
 		"""The internal prompt which is used when handling an object which can be invoked from with adt 
 		Parameters: Text to be displayed as title, The object to be used for display"""
-		
+
 		clear()
 
-		print(self.__title)		
+		print(self.title)		
 		self.displayValuesWithinADT()
 
-		if self.__usesPointers:
+		if self.usesPointers:
 			print()
 			self.displayPointersWithinADT()
 
@@ -169,7 +178,7 @@ class ADTObjectHandler:
 
 	def displayValuesWithinADT(self):
 		# Returns a list [ {<heading>: {<attr>: <val>, } }, ]
-		obj = self.__object
+		obj = self.object
 
 		numberOfHeadings = len(obj.dataItems)
 
@@ -191,7 +200,6 @@ class ADTObjectHandler:
 			# and sets up variables used for controlling output
 
 			keyName = heading
-
 			width = obj.dataItemsWidth[heading]
 
 			placeholderTemplate += "{" + keyName + ":^" + str(width) + "}|"
@@ -210,6 +218,7 @@ class ADTObjectHandler:
 			# Builds a dictionary for formatting
 			for heading in obj.dataItems:
 
+				# Returns function which processes value fetching for a certain node index
 				retrfunc = obj.dataItemsRetrievingFunc[heading]
 				parametersForRows[heading] = retrfunc(nodeIndex)
 				parametersForRows["Index"] = nodeIndex
@@ -219,8 +228,7 @@ class ADTObjectHandler:
 		print(demarc)
 					
 	def displayPointersWithinADT(self):
-		# Returns a list [{<Pointer Namw>: <Pointer Value> }, ]
-		pointers = self.__object.getSpecialPointers() 
+		pointers = self.object.getSpecialPointersName() # List
 
 		numberOfPointers = len(pointers)
 
@@ -250,10 +258,10 @@ class ADTObjectHandler:
 
 		# Body
 		for pointer in pointers: 
-			# Grabs the pointer name for the entry, there is only one key
+			# Grabs the pointer name for the entry
 			pointerName = pointer
 
-			pointerValue = self.__object.getPointersValue(pointer)
+			pointerValue = self.object.getSpecialPointersValue(pointer)
 
 			parametersForRows = {"PointerName": pointerName, "Value": pointerValue}
 			print(placeholderTemplate.format(**parametersForRows))
@@ -261,29 +269,27 @@ class ADTObjectHandler:
 		print(demarc)
 
 	def refresherPrompt(self):
+		if self.skipThroughPostings: # If post should be short-circuited
+			return None
+
 		clear()
 
 		self.embeddedPrompt()
 
-		logString = parse(self.__object.getLog())
+		logString = parse(self.object.log)
 		print(logString)
 
-		self.__object.setLog([])
+		self.object.resetLog()
 
 		input("Press enter to continue... ")
-
-def fetchADTMethodsList():
-	pass
-
-typeOfADT = "queue"
 
 class adt_wise_ui(Cmd):
 	# def __init__
 
 	maxNumOfPrompts = 3
 
-	availableADTTypes = logic.getavailableADTs()
-	existingObjects = logic.fetchIndex()
+	availableADTTypes = logic.getavailableADTCallNames()
+	existingObjects = logic.fetchAllADTObjNames()
 
 	maxNumOfNodes = 12
 	minNumOfNodes = 3
@@ -298,14 +304,13 @@ class adt_wise_ui(Cmd):
 		else:
 			nameOfObj =  input("Enter the name (Case-Sensitive) of the ADT to load. :> ")
 
-		# dict( [[<key>, <value>], ] ) => {<key>: <value>, }
-		objNames = dict( logic.fetchIndex() ).keys()
+		objNames = logic.fetchAllADTObjNames()
 
 		if nameOfObj not in objNames:
 			print("An object with that name does not exist.")
 
 		else:
-			objToUse = logic.retrieveObj(nameOfObj)
+			objToUse = logic.retrieveADTObjectByName(nameOfObj)
 
 			# Creates an object handler for the object and runs the internal loop
 			ADTObjectHandler(objToUse).internalLoop()
@@ -337,10 +342,9 @@ class adt_wise_ui(Cmd):
 			row = placeholderTemplate.format(ADTName = "", ADTType = "")
 			print(row)
 		else:
-			for pair in self.existingObjects:
+			for objName in self.existingObjects:
 
-				objName = pair[0]
-				typeOfObj = pair[1]
+				typeOfObj = getADTTypeFromObjName(objName)
 
 				row = placeholderTemplate.format(ADTName = objName, ADTType = typeOfObj)
 				print(row)
@@ -350,7 +354,7 @@ class adt_wise_ui(Cmd):
 	def validTypeOfADT(self, typeOfADT):
 		"""If valid returns True, else returns an error message """
 
-		if typeOfADT in self.availableADTTypes.keys():
+		if typeOfADT.lower().strip() in self.availableADTTypes:
 			return True
 		else:
 			return "{} is not a supported type of ADT. Choose one from the available types.".format(typeOfADT)
@@ -358,7 +362,7 @@ class adt_wise_ui(Cmd):
 	def validADTName(self, name):
 		"""If valid returns True, else returns an error message """
 		
-		if name in dict( self.existingObjects ).keys():
+		if name in self.existingObjects:
 			return("An ADT with ths name already exists. Try another name.")
 
 		elif len(name) > self.maxPermissibleLengthOfName:
@@ -385,81 +389,82 @@ class adt_wise_ui(Cmd):
 		"""Allows for creating a new ADT."""
 
 		limitExceeded = False
+		invalidEntry = False
 
-		arguments = args.replace(",", " ").split()
+		# Process argument to split on ',' and strip elements of trailing/leading spaces
 
-		if arguments == []: # If no arguments received
+		arguments = args.split(",")
+		arguments = list(map(lambda x: x.strip(), arguments))
+
+		if arguments == ['']: # If no arguments received
 
 			# Prompts for ADT Type
-			for i in range(self.maxNumOfPrompts):
+			if not limitExceeded:
+				for i in range(self.maxNumOfPrompts):
 
-				print("The following types of ADT are available:\n")
-				for ADTType in self.availableADTTypes.keys():
-					typeOfADT = ADTType.title()
+					print("The following types of ADT are available:\n")
+					for ADTType in self.availableADTTypes:
+						typeOfADT = ADTType.title()
 
-					print("{type:>4}".format(type=typeOfADT) )
+						print("{type:>4}".format(type=typeOfADT) )
 
-				# typeOfADT
-				typeOfADT = input("\nWhat type of ADT do you want to make? ").lower().strip()
+					# typeOfADT
+					typeOfADT = input("\nWhat type of ADT do you want to make? ")
 
-				# Validation
-				valid =  self.validTypeOfADT(typeOfADT)
+					# Validation
+					valid =  self.validTypeOfADT(typeOfADT)
 
-				if valid == True:
-					break
+					if valid == True:
+						break
+					else:
+						errorMsg = valid
+						print(errorMsg)
 				else:
-					errorMsg = valid
-					print(errorMsg)
-			else:
-				limitExceeded = True
+					limitExceeded = True
 
 			# Prompts for name
-			for i in range(self.maxNumOfPrompts):
-				# name
-				name = input("What do you want to name this ADT? ")
+			if not limitExceeded:
+				for i in range(self.maxNumOfPrompts):
+					# name
+					name = input("What do you want to name this ADT? ").strip()
 
-				# Validation
-				valid =  self.validADTName(name)
+					# Validation
+					valid =  self.validADTName(name)
 
-				if valid == True:
-					break
+					if valid == True:
+						break
+					else:
+						errorMsg = valid
+						print(errorMsg)
 				else:
-					errorMsg = valid
-					print(errorMsg)
-			else:
-				limitExceeded = True
+					limitExceeded = True
 
 			# Prompts for number of nodes
 			promptText = "How many nodes do you want it to have? <{min}-{max}> ".format(min = self.minNumOfNodes, 
 				max = self.maxNumOfNodes)
-			
-			for i in range(self.maxNumOfPrompts):
-				# nodeCount
-				nodeCount = input(promptText).strip()
+			if not limitExceeded:
+				for i in range(self.maxNumOfPrompts):
+					# nodeCount
+					nodeCount = input(promptText).strip()
 
-				# Validation
-				valid =  self.validNodeCount(nodeCount)
+					# Validation
+					valid =  self.validNodeCount(nodeCount)
 
-				if valid == True:
-					break
+					if valid == True:
+						break
+					else:
+						errorMsg = valid
+						print(errorMsg)			
 				else:
-					errorMsg = valid
-					print(errorMsg)			
-			else:
-				limitExceeded = True
+					limitExceeded = True
 
 			if limitExceeded:
 				print("You have responded incorrectly 3 times. Exiting prompt...")
-			else:
-				logic.createADT(name, typeOfADT, nodeCount)
-				self.existingObjects = logic.fetchIndex()
+				invalidEntry = True
 
-		elif len(arguments) == 3:
+		elif len(arguments) == 3: # If 3 arguments received
 
 			typeOfADT, name, nodeCount = arguments
-			typeOfADT = typeOfADT.lower().strip()
-
-			invalidEntry = False
 
 			for value, validator in [[typeOfADT, self.validTypeOfADT],
 				[name, self.validADTName],
@@ -474,14 +479,20 @@ class adt_wise_ui(Cmd):
 					print(errorMsg)	
 
 					invalidEntry = True
-	
-		if not invalidEntry:
-			logic.createADT(name, typeOfADT, nodeCount)
-
-			self.existingObjects = logic.fetchIndex()
 
 		else:
-			print("Either provide no arguments or exactly 3 valid ones seperated by spaces.")
+			invalidEntry = True
+	
+		# Build ADT or give error message
+		if not invalidEntry:
+			# ADT Call names are stored in lower-case
+			typeOfADT = typeOfADT.lower().strip()
+
+			logic.createADT(name, typeOfADT, nodeCount)
+			self.existingObjects = logic.fetchAllADTObjNames()
+
+		elif len(arguments) not in [0, 3]:
+			print("Either provide no arguments or exactly 3 valid ones seperated by commas.")
 
 def start():
 	promptLoop = adt_wise_ui()

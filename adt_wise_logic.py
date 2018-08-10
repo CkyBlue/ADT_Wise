@@ -1,10 +1,12 @@
-from ADTs.adt_queue import queue
+from adt_queue import Queue
+from adt_hash_tables import HashTable
+
 import adt_wise_data as data
 
-"""DONOT WORRY ABOUT VALIDATION RIGHT NOW! Have some faith in yourself! 
-	Forgo error responses right now!
+# Call names would be names used to refer to an ADT, for eg: queue
 
-"""
+# Link call name to ADT class here
+ADTS = {"queue": Queue, "hash-table": HashTable}
 
 class undoNode:
 	def __init__(self):
@@ -66,37 +68,36 @@ class undoGroup:
 	def getMostRecentAddition(self):
 		pass
 
-def fetchIndex():
-	"""Returns [[<adt-name>, <adt-type>], ]"""
-	return data.loadIndex()
+def fetchAllADTObjNames():
+	"""Returns [<user-designated-adt-name>, ]"""
+	return data.loadAllADTNames()
 
-def getavailableADTs():
-	"""Returns {<adt-call-name>: <adt-class>, }"""
-	return {"queue" : queue}
+def getADTTypeFromName(adtName):
+	if adtName in fetchAllADTObjNames():
+		return data.loadAllADTTypes()[adtName]
+	else:
+		return None
 
-def retrieveAllAvailableObjs():
-	"""Returns {<obj_name>: <obj>,} """
+def getavailableADTCallNames():
+	"""Returns [<adt-call-name>, ]"""
+	return list(ADTS.keys())
 
-	availableObjs = {}
+def getADTClassFromCallName(adtCallName):
+	if adtCallName in getavailableADTCallNames():
+		return ADTS[adtCallName]
+	else:
+		return None
 
-	objList = fetchIndex()
-	for objName in objList.keys():
-		obj = data.loadObj(objName)
-		availableObjs[objName] = obj
+def retrieveADTObjectByName(adtName):
+	"""Returns [<adtName>, ] """
+	if adtName in fetchAllADTObjNames():
+		return data.loadObj(adtName)
 
-	return availableObjs
-
-def retrieveObj(objName):
-	return data.loadObj(objName)
-
+	else:
+		return None
 
 def createADT(nameOfADT, typeOfADT, numberOfNodes):
-	thisObj = getavailableADTs()[typeOfADT](nameOfADT, numberOfNodes)
+	thisObj = getADTClassFromCallName(typeOfADT)(nameOfADT, numberOfNodes)
 		
 	data.dumpObject(nameOfADT, thisObj)
 	data.updateIndex(nameOfADT, typeOfADT)
-
-
-
-
- 

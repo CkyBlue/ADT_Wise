@@ -7,7 +7,9 @@ with ADT themselves. So far I've adapted hash-table and queue.
 You can get a feel for how it is suppose to work by trying out 
 'insert' on a queue. The live logs for the rest aren't ready. 
 
-Run it through main.py.
+Run it through main.py. The program uses a clear screen function which 
+only works when running the program on a terminal so it'll be easiest to 
+view the program on terminal.
 
 I hope to get the rest adapted in time. The ones adapted are open to being 
 refined. 
@@ -20,6 +22,7 @@ Integrated:
 	Queue
 	Hash-Table
 
-Postings:
+Real-time log:
 	Queue: 66% done
 	Hash-Table: 0% done
+
