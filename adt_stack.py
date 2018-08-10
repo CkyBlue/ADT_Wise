@@ -86,8 +86,6 @@ class Stack(adt.ADT):
 
 			msg.append(popVal)
 
-		msg.append("Hell")
-
 		return msg
 
 	def search(self, itemToBeSearched):
