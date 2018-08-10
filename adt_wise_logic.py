@@ -1,12 +1,13 @@
 from adt_queue import Queue
 from adt_hash_tables import HashTable
+from adt_stack import Stack
 
 import adt_wise_data as data
 
 # Call names would be names used to refer to an ADT, for eg: queue
 
 # Link call name to ADT class here
-ADTS = {"queue": Queue, "hash-table": HashTable}
+ADTS = {"queue": Queue, "hash-table": HashTable, "stack": Stack}
 
 class undoNode:
 	def __init__(self):

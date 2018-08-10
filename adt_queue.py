@@ -11,6 +11,15 @@ class Queue(adt.ADT):
 
 		return super().__doc__(text)
 
+	def getFreePointer(self):
+		return self.freePointer
+
+	def getHeadPointer(self):
+		return self.headPointer
+
+	def getTailPointer(self):
+		return self.tailPointer
+
 	def __init__(self, name, length):
 		super().__init__(name, length, True) # pointer = True
 
@@ -28,9 +37,9 @@ class Queue(adt.ADT):
 		# Overwrite
 
 		self.pointers = ["Free Pointer", "Head Pointer", "Tail Pointer"]
-		self.pointerNameToProp = {"Free Pointer": self.freePointer, 
-			"Head Pointer": self.headPointer, 
-			"Tail Pointer": self.tailPointer}
+		self.pointerNameToMethod = {"Free Pointer": self.getFreePointer, 
+			"Head Pointer": self.getHeadPointer, 
+			"Tail Pointer": self.getTailPointer}
 
 	def insert(self, itemToBeInserted):
 		"""Allows for adding an item to the tail of the queue if it is not full."""

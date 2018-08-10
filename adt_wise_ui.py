@@ -85,7 +85,9 @@ class ADTObjectHandler:
 
 					# GUI needs another thread to run this
 					response = funcToRun()
-					print(response, end = "")
+					
+					if response:
+							print(parse(response))
 
 				else: # If values need to prompted for
 
@@ -233,7 +235,7 @@ class ADTObjectHandler:
 		numberOfPointers = len(pointers)
 
 		padding = "    "
-		widthForValues = 7
+		widthForValues = 10
 
 		# Initially,
 		placeholderTemplate = padding + "|"

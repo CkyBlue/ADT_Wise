@@ -81,7 +81,7 @@ class ADT:
 
 		if self.usesPointers: # Uses pointers?
 
-			self.pointerNameToProp = {}
+			self.pointerNameToMethod = {}
 			self.pointersName = []
 
 			self.pointers = []
@@ -144,7 +144,7 @@ class ADT:
 
 	def getSpecialPointersValue(self, pointerName):
 		if pointerName in self.pointers:
-			return self.pointerNameToProp[pointerName]
+			return self.pointerNameToMethod[pointerName]()
 
 	def getMethod(self, callName):
 		"""Returns a dictionary with call name for keys, 
