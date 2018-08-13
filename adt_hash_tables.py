@@ -2,7 +2,7 @@ import adt
 
 class hashTableNode:
 	def __init__(self):
-		self.idCol = 0
+		self.idCol = ""
 		self.item = ""
 
 class HashTable(adt.ADT):
@@ -14,7 +14,7 @@ class HashTable(adt.ADT):
 		
 		# Set all IDs initially to -1
 		for index in range(self.numberOfNodes):
-			self.nodeArray[index].idCol = -1		
+			self.nodeArray[index].idCol = "-1"		
 
 		# Prompts
 		# ID Prompt comes before item prompt so append was not used
@@ -104,12 +104,12 @@ class HashTable(adt.ADT):
 		post = self.post
 		rfr = self.refresh
 
-		index = self.hash(idForNewEntry)
+		index = self.hash(int(idForNewEntry))
 		
 		currentPointer = index
 		tableFull = False
 
-		while not tableFull and self.nodeArray[currentPointer].idCol != -1: # Exhaust table
+		while not tableFull and self.nodeArray[currentPointer].idCol != "-1": # Exhaust table
 
 			# Move to next position
 			currentPointer += 1
@@ -127,7 +127,7 @@ class HashTable(adt.ADT):
 
 		else:
 
-			self.nodeArray[currentPointer].idCol = int(idForNewEntry)
+			self.nodeArray[currentPointer].idCol = str(int(idForNewEntry))
 			self.nodeArray[currentPointer].item = itemToBeInserted
 
 			msg.append("The item was added successfully at index {}.".format(currentPointer))
@@ -141,8 +141,6 @@ class HashTable(adt.ADT):
 		# Short-hand
 		post = self.post
 		rfr = self.refresh
-
-		idOfItemToBeRemoved = int(idOfItemToBeRemoved)
 
 		index = self.hash(idOfItemToBeRemoved)
 
@@ -166,7 +164,7 @@ class HashTable(adt.ADT):
 		else:
 			# Empty the node
 			self.nodeArray[pointer].item = ""
-			self.nodeArray[pointer].idCol = 0
+			self.nodeArray[pointer].idCol = "-1"
 
 			msg.append("Entry was found at index {} and removed.".format(pointer))
 

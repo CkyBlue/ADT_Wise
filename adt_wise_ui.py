@@ -2,8 +2,6 @@ import adt_wise_logic as logic
 import os, copy
 from cmd import Cmd
 
-# Debug from scratch ...
-
 # Turn on for debugging purposes
 noPosting = False
 
