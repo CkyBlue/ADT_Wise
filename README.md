@@ -45,3 +45,5 @@ If you want to contribute by imparting your understanding of how certain ADT
 operations are carried out, feel free to tinker with the log texts for the
 console version.
 
+Refer to adt_queue to look at how self.refresh() and self.post() are being used
+for implementing the live log.
