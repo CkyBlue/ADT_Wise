@@ -1,23 +1,9 @@
-The project is basically a polished integration of programs I'd made during 
-my A2 year to help me practise ADTs. 
-
-Until the live logs are up, all you can do is simply run commands on ADTs
-and see what the effect is on internal variables such as pointer values.
-
-The live logs are supposed to explain the steps involved in each action in more
-depth but they still need more work.
-
-I hoped that this program to be helpful to those that might be struggling
-with ADTs. I'd found it a tough concept to really get comfortable with myself.
-I'm not yet convinved of the utility of this endeavor but its pulling along just fine
-so far.
-
-So far I've adapted hash-table, queue, stack and linked-list.
-
 You can get a feel for how it is suppose to work by trying out 
 'insert' on queue. The live logs for the rest aren't ready. 
 
-Run it through main.py. The program uses a clear screen function which 
+The console branch is stable (I hope), the other is not.
+
+Run it through main.py. The console version uses a clear screen function which 
 only works when running the program on a terminal so it'll be easiest to 
 view the program on terminal.
 
