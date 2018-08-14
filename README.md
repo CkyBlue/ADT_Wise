@@ -1,6 +1,9 @@
 You can get a feel for how it is suppose to work by trying out 
 'insert' on queue. The live logs for the rest aren't ready. 
 
+Until the live logs are up, all you can do is simply run commands on ADTs
+and see what the effect is on internal variables such as pointer values.
+
 The console branch is stable (I hope), the other is not.
 
 Run it through main.py. The console version uses a clear screen function which 
