@@ -27,7 +27,7 @@ It looks like bringing the project to a GUI will mean adts are going to
 have to implemented somewhat differently. For the time being, I think I
 will have the GUI version and the console version on seperate branches.
 
-If you want to contribute by imparting your understanding of how certain ADT
+If you want to contribute by imparting your understanding of how ADT
 operations are carried out, feel free to tinker with the log texts for the
 console version.
 
