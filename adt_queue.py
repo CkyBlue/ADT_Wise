@@ -9,7 +9,7 @@ class Queue(adt.ADT):
 		"Add more elaboration later..."
 		]
 
-		return super().__doc__(text)
+		return super().__doc__(*text)
 
 	def getFreePointer(self):
 		return self.freePointer
@@ -81,37 +81,30 @@ class Queue(adt.ADT):
 		# Correct Flow
 			post("Correcting links...")
 
+			# Free list
+
 			pointerTo = self.nodeArray[currentPointer].pointer
 			post("Since the index value {} that the current node points to is to be overwritten,".format(pointerTo))
 			post("Correction uses that address first.\n")
-
 			post("Since current node is linked into the free list,")
 			post("the index it points to can be used as the next free pointer.")
 			post("New free pointer: {}".format(pointerTo))
-
-			rfr()
-
-			# Free list
+			rfr()			
 			self.freePointer = pointerTo 
 
 			# Data list			
 			if self.tailPointer != -1:
 				post("As for the data list,")
-				post("Since the pointer to the tail is to be modified, the process involving it is then handled.\n")
-
 				post("The previous tail at index {} is set to point to the current tail at {},".format(self.tailPointer,
 					currentPointer))
-				post("so that when the previous tail is popped on reaching the head of the queue,")
-				post("the program will be able to read the next head from it,")
-
+				post("so that the new tail can be fetched for the head pointer,")
+				post("when the old tail is popped out.")
 				rfr()
 				self.nodeArray[self.tailPointer].pointer = currentPointer			
 			
 			post("Since current node is now the new tail, it does not need to point to anything.")
-			post("Thus, the current node should point to: {}".format(-1))
-		
+			post("Thus, the current node should point to: {}".format(-1))		
 			rfr()
-			
 			self.nodeArray[currentPointer].pointer = -1
 
 			post("Modifying special pointers...")
@@ -216,8 +209,6 @@ class Queue(adt.ADT):
 
 		msg = [] # Holds message that is displayed after the logs
 
-		## Add postings
-
 		# Short-hand
 		post = self.post
 		rfr = self.refresh
@@ -229,36 +220,64 @@ class Queue(adt.ADT):
 
 		if self.headPointer == -1:
 			post("The queue is empty.")
-			msg.append("No item could be removed")
-			rfr()
-
+			msg.append("No item could be removed.")
 		else:
 			# Handle key operation
-			currentPointer = self.headPointer
-			out = self.nodeArray[currentPointer].item
-			self.nodeArray[currentPointer].item = ""
-			post(out)
 
+			post("Moving to head pointer...")
+			post("Current Pointer: {}".format(self.headPointer))
+			rfr()
+			currentPointer = self.headPointer
+
+			out = self.nodeArray[currentPointer].item
+			post("Retrieving item from the index pointed to by current pointer...")
+			post("Temporarily stored '{}'".format(out))
+			rfr()
+			msg.append("Item was successfully removed.")
+			msg.append("Output is '{}'.".format(out))
+
+			post("Clearing item from the index pointed to by current pointer...")
+			rfr()
+			self.nodeArray[currentPointer].item = ""
+			
 			# Correct flow
-			# Data List
+				# Data List
+			post("Correcting links...")
+
+			post("The current node is to be linked to the free list,")
+			post("However, the pointer stored by the node will be overwritten")
+			post("when linked to the free list.\n")
+			post("Correction thus tends to the use of this pointer value first,")
+			rfr()
+			post("Current Pointer points to {}".format(self.nodeArray[currentPointer].pointer))
+			post("This value gives the next head pointer,")
+			post("Setting head pointer to point to {}...".format(self.nodeArray[currentPointer].pointer))
+			rfr()
 			self.headPointer = self.nodeArray[currentPointer].pointer
 
-			# Free List
-			if self.freePointer == -1:
-				self.freePointer = currentPointer
+			post("Now, adding node to the end of the free list...")
+			post("Current node is made to point to the node pointed to by the present free pointer,")
+			post("Free Pointer: {}".format(self.freePointer))
+			rfr()
+			self.nodeArray[currentPointer].pointer = self.freePointer
+			post("Free pointer is then made to point to the current node...")
+			rfr()
+			self.freePointer = currentPointer
 
-			else:
-				newPointer = self.freePointer
-				endPointer = self.nodeArray[newPointer].pointer
-
-				while endPointer != -1:
-					newPointer = self.nodeArray[endPointer].pointer
-					endPointer = self.nodeArray[newPointer].pointer
-				self.nodeArray[newPointer].pointer = currentPointer
-
-			self.nodeArray[currentPointer].pointer = -1
-
+			post("Checking if tail pointer needs to be modified...")
+			post("It needs to be modified if removed node was the tail,")
+			post("Freed node: {} and tail node: {}".format(currentPointer, self.tailPointer))
+			rfr()
 			if currentPointer == self.tailPointer:
+				post("It's a match,")
+				post("meaning the tail node was removed,")
+				post("meaning the list is empty,")
+				post("Tail pointer is changed to point to -1.")
+				rfr()
 				self.tailPointer = -1
+			else:
+				post("They do not match,")
+				post("No change made to tail pointer,")
 
-			return msg
+		rfr()
+		return msg

@@ -85,7 +85,11 @@ class ADTObjectHandler:
 					response = funcToRun()
 					
 					if response:
+							clear()
 							print(parse(response))
+
+							input("Press enter to continue... ")
+							clear()
 
 				else: # If values need to prompted for
 
@@ -146,7 +150,7 @@ class ADTObjectHandler:
 					thisCommand = callName.title()
 					
 					# Reading command info from docstring
-					info = self.obj.getMethod(thisCommandi).__doc__ or '' 
+					info = self.object.getMethod(thisCommand).__doc__ or '' 
 
 					print(thisCommand + "\n\t" + info)
 
@@ -155,11 +159,24 @@ class ADTObjectHandler:
 			elif cmd == "exit":
 				print("Saving modifications...")
 				print("Exiting ADT interface.")
+
+				input("Press enter to continue...")
+				break
+
+			elif cmd == "toggle":
+				self.skipThroughPostings = not self.skipThroughPostings
+
+				translation = {True: "on", False: "off"} # Maps true->on, false->off
+				print("Toggled postings to {}.".format(translation[self.skipThroughPostings])) # on/off
+
+				input("Press enter to continue...")
 				break
 
 			else:
 				print("The command '{}' is not valid.".format(cmd))
 				print("Check spelling, type 'help' for instructions.")
+
+				input("Press enter to continue...")
 
 	def embeddedPrompt(self):
 		"""The internal prompt which is used when handling an object which can be invoked from with adt 
