@@ -4,8 +4,6 @@ You can get a feel for how it is suppose to work by trying out
 Until the live logs are up, all you can do is simply run commands on ADTs
 and see what the effect is on internal variables such as pointer values.
 
-The console branch is stable (I hope), the other is not.
-
 Run it through main.py. The console version uses a clear screen function which 
 only works when running the program on a terminal so it'll be easiest to 
 view the program on terminal.
@@ -20,7 +18,7 @@ Adapted:
 	Linked-list
 
 Real-time log:
-	Queue: 66% done
+	Queue: 100% done
 	Hash-Table: 0% done
 	Stack: 0% done
 	Linked-list: 0% done
