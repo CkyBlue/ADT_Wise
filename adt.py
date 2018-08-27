@@ -105,12 +105,12 @@ class ADT:
 		# The dictionary is inside an array so that if a single command need multiple values, the existing system permits
 		# valueName must match the name of the parameter for the function
 
-		self.prompts["insert"] = [{"promptMsg": "Enter item to be inserted", 
+		self.prompts["insert"] = [{"promptMsg": "Item", 
 			"validator": self.isItemValid, 
 			"valueName": "itemToBeInserted"}
 		]
 
-		self.prompts["search"] = [{"promptMsg": "Enter item to be searched", 
+		self.prompts["search"] = [{"promptMsg": "Item", 
 			"validator": lambda x: True, # No validation needed
 			"valueName": "itemToBeSearched"}
 		]
