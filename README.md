@@ -1,12 +1,12 @@
 You can get a feel for how it is suppose to work by trying out 
-'insert' on queue. The live logs for the rest aren't ready. 
+https://repl.it/@OverCky/Queue, it's a modified adaptation of the Queue used here.
 
-Until the live logs are up, all you can do is simply run commands on ADTs
+Until the live logs are up, all you can do is simply run commands on the other ADTs
 and see what the effect is on internal variables such as pointer values.
 
 Run it through main.py. The console version uses a clear screen function which 
-only works when running the program on a terminal so it'll be easiest to 
-view the program on terminal.
+only works when running the program on a terminal so it'll be best to 
+view there.
 
 I hope to get the rest adapted in time. The ones adapted are open to being 
 refined. 
@@ -25,9 +25,8 @@ Real-time log:
 	
 ---------------------------------------
 
-If you want to contribute by imparting your understanding of how certain ADT
-operations are carried out, feel free to tinker with the log texts for the
-console version.
+If you want to contribute, feel free to tinker with the log texts for the
+other ADTs.
 
 Refer to adt_queue to look at how self.refresh() and self.post() are being used
 for implementing the live log.
