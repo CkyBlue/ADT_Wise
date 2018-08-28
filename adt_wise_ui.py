@@ -54,8 +54,11 @@ class ADTObjectHandler:
 
 	def internalLoop(self):
 		while True:
+			self.object.resetLog()
 
+			clear()
 			# Embedded prompt is displayed
+			print(self.title)
 			self.embeddedPrompt()
 
 			userInput = input("{} ".format(self.keyForPrompt))
@@ -141,6 +144,7 @@ class ADTObjectHandler:
 
 
 			elif cmd == "help":
+				clear()
 				print(self.object.__doc__())
 				print("For current purposes, the available commands are:\n")
 
@@ -148,13 +152,16 @@ class ADTObjectHandler:
 
 					# Casing the print right
 					thisCommand = callName.title()
-					
+			
 					# Reading command info from docstring
-					info = self.object.getMethod(thisCommand).__doc__ or '' 
+					info = self.object.getMethod(callName).__doc__ or '' 
 
 					print(thisCommand + "\n\t" + info)
 
-				input("Press enter to continue...")
+				toggleInfo = "Allows toggling the logs on or off."  
+				print("Toggle" + "\n\t" + toggleInfo)
+
+				input("\nPress enter to continue...")
 
 			elif cmd == "exit":
 				print("Saving modifications...")
@@ -166,11 +173,10 @@ class ADTObjectHandler:
 			elif cmd == "toggle":
 				self.skipThroughPostings = not self.skipThroughPostings
 
-				translation = {True: "on", False: "off"} # Maps true->on, false->off
+				translation = {True: "off", False: "on"} # Maps true->off, false->on
 				print("Toggled postings to {}.".format(translation[self.skipThroughPostings])) # on/off
 
 				input("Press enter to continue...")
-				break
 
 			else:
 				print("The command '{}' is not valid.".format(cmd))
@@ -297,8 +303,9 @@ class ADTObjectHandler:
 		print(logString)
 
 		self.object.resetLog()
-
 		input("Press enter to continue... ")
+		for i in range(100):
+			pass
 
 class adt_wise_ui(Cmd):
 	# def __init__
@@ -400,7 +407,7 @@ class adt_wise_ui(Cmd):
 				return True
 		else:
 			return("Please provide a integer between {min} and {max}.".format(min = self.minNumOfNodes,
-			max = self.maxNumOfPrompts))
+			max = self.maxNumOfNodes))
 
 	def do_create(self, args):
 		"""Allows for creating a new ADT."""
