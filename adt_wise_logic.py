@@ -2,14 +2,17 @@ from adt_queue import Queue
 from adt_hash_tables import HashTable
 from adt_stack import Stack
 from adt_linked_list import LinkedList
-
-import adt_wise_data as data
+from adt_binary_tree import BinaryTree
 
 # Call names would be names used to refer to an ADT, for eg: queue
 # Obj names would be names assigned to objects made from ADT classes
 
 # Link call name to ADT class here
-ADTS = {"queue": Queue, "hash-table": HashTable, "stack": Stack, "linked-list": LinkedList}
+ADTS = {"queue": Queue, "binary-tree": BinaryTree}
+
+adtNames = []
+adtType = {}
+objectStore = {}
 
 class undoNode:
 	def __init__(self):
@@ -73,34 +76,45 @@ class undoGroup:
 
 def fetchAllADTObjNames():
 	"""Returns [<user-designated-adt-name>, ]"""
-	return data.loadAllADTNames()
+	return adtNames
+
+def deleteADTObj(ADTname):
+	if ADTname in fetchAllADTObjNames():
+
+		adtNames.remove(ADTname)
+		adtType.pop(ADTname)
+		objectStore.pop(ADTname)
+
+		return True
+	else:
+		return False
+
+def getAvailableADTCallNames():
+	return ADTS.keys()
 
 def getADTTypeFromName(adtName):
 	if adtName in fetchAllADTObjNames():
-		return data.loadAllADTTypes()[adtName]
+		return adtType[adtName]
 	else:
 		return None
 
-def getavailableADTCallNames():
-	"""Returns [<adt-call-name>, ]"""
-	return list(ADTS.keys())
-
 def getADTClassFromCallName(adtCallName):
-	if adtCallName in getavailableADTCallNames():
+	if adtCallName in getAvailableADTCallNames():
 		return ADTS[adtCallName]
+
 	else:
 		return None
 
 def retrieveADTObjectByName(adtName):
-	"""Returns [<adtName>, ] """
 	if adtName in fetchAllADTObjNames():
-		return data.loadObj(adtName)
-
+		return objectStore[adtName]
 	else:
 		return None
 
 def createADT(nameOfADT, typeOfADT, numberOfNodes):
 	thisObj = getADTClassFromCallName(typeOfADT)(nameOfADT, numberOfNodes)
 		
-	data.dumpObject(nameOfADT, thisObj)
-	data.updateIndex(nameOfADT, typeOfADT)
+	objectStore[nameOfADT] = thisObj
+
+	adtNames.append(nameOfADT)
+	adtType[nameOfADT] = typeOfADT

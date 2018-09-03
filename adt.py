@@ -25,8 +25,6 @@ is the doc-string
 The arguments that the methods with call names receive 
 are meant to be string."""
 
-## TODO - Add validation to methods
-
 class linkNode:
 	def __init__(self):
 		self.item = ""
@@ -39,16 +37,11 @@ class ADT:
 	def __doc__(self, *args):
 		"""Takes a list, each entry each a seperate sentence for the ADT's docstring."""
 
-		docArgs = list(args)
-
-		text = docArgs
+		text = list(args)
 		output = ""
 
-		for i in text:
-			if i != (len(text) - 1) :
-				output += i + "\n"
-			else:
-				output += i
+		for i in range(len(text)):
+			output += text[i] + "\n"
 
 		return output
 
@@ -79,10 +72,11 @@ class ADT:
 
 		self.usesPointers = utilizesPointers
 
-		if self.usesPointers: # Uses pointers?
+		# The binary tree is the only exception
+		self.hasTree = False
 
+		if self.usesPointers: # Uses pointers?
 			self.pointerNameToMethod = {}
-			self.pointersName = []
 
 			self.pointers = []
 
@@ -105,12 +99,12 @@ class ADT:
 		# The dictionary is inside an array so that if a single command need multiple values, the existing system permits
 		# valueName must match the name of the parameter for the function
 
-		self.prompts["insert"] = [{"promptMsg": "Item", 
+		self.prompts["insert"] = [{"promptMsg": "Enter item to be inserted", 
 			"validator": self.isItemValid, 
 			"valueName": "itemToBeInserted"}
 		]
 
-		self.prompts["search"] = [{"promptMsg": "Item", 
+		self.prompts["search"] = [{"promptMsg": "Enter item to be searched", 
 			"validator": lambda x: True, # No validation needed
 			"valueName": "itemToBeSearched"}
 		]
@@ -123,8 +117,8 @@ class ADT:
 
 	def isItemValid(self, item):
 
-		if len(item) > 20:
-			return "The item must be shorter than 20 letters."
+		if len(item) > self.dataItemsWidth["Item"]:
+			return "The item must be shorter than " + int(self.dataItemsWidth["item"]) + " letters."
 
 		if not item.replace(" ", "").isalnum():
 			return "Aside from spaces, the item must contain only alpha-numeric characters."
@@ -180,7 +174,7 @@ class ADT:
 		return msg
 
 	def search(self, itemToBeSearched):
-		"""Allows for searching the queue for an item. Retrieves first instance encountered."""
+		"""Allows for searching the Tree for an item. Retrieves first instance encountered."""
 
 		msg = [] # Holds message that is displayed after the logs
 
