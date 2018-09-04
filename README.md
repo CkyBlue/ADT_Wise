@@ -1,8 +1,8 @@
 Versions adapted for running on browser:
 
-https://repl.it/@OverCky/Binary-Tree ;
+https://repl.it/@OverCky/Binary-Tree 
 
-https://repl.it/@OverCky/Queue;
+https://repl.it/@OverCky/Queue
 
 Run it through main.py. It uses a clear screen function which 
 only works when running the program on a terminal so it'll be best to 
