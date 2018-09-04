@@ -1,5 +1,6 @@
-You can get a feel for how it is suppose to work by trying out 
-https://repl.it/@OverCky/Binary-Tree, it's a modified adaptation of the Binary-Tree used here.
+Versions adapted for running on browser:
+https://repl.it/@OverCky/Binary-Tree
+https://repl.it/@OverCky/Queue
 
 Run it through main.py. It uses a clear screen function which 
 only works when running the program on a terminal so it'll be best to 
