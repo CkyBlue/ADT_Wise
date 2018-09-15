@@ -1,4 +1,4 @@
-import os, copy
+import os
 from cmd import Cmd
 from colorama import init, Style, Fore, Back
 
