@@ -1,12 +1,13 @@
-Versions adapted for running on browser:
+Run on browser: https://repl.it/@OverCky/ADT-Wise
 
-https://repl.it/@OverCky/Binary-Tree 
-
-https://repl.it/@OverCky/Queue
-
+The project requires the colorama library to work.
 Run it through main.py. It uses a clear screen function which 
-only works when running the program on a terminal so it'll be best to 
+only works when running the program on a console so it'll be best to 
 view there.
+
+Screenshots from the version on repl.it:
+
+
 
 I hope to get other ADTs includeded in time.
 
