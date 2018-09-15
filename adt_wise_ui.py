@@ -13,8 +13,7 @@ color_mapping = {-1: Back.BLACK,
 	5: Back.WHITE + Fore.BLACK,
 	6: Back.YELLOW + Fore.BLACK}
 
-header = "Type 'help' to list available commands."
-header += "\n" + "Type 'help' followed by command name for additional info on a command." 
+header = "Type 'load' to choose an ADT to interact with, else type 'help' or 'exit'."  
 header += "\n"
 
 # Turn on for debugging purposes
