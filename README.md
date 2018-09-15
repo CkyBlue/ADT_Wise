@@ -7,8 +7,8 @@ view there.
 
 Screenshots from the version on repl.it:
 
-![Screenshot](Screenshot0.png)
-![Screenshot](Screenshot1.png)
+![Screenshot](Screenshot0.PNG)
+![Screenshot](Screenshot1.PNG)
 
 I hope to get other ADTs includeded in time.
 
