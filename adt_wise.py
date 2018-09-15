@@ -16,7 +16,7 @@ color_mapping = {-1: Back.BLACK,
 	5: Back.WHITE + Fore.BLACK,
 	6: Back.YELLOW + Fore.BLACK}
 
-header = "Type 'load' to choose an ADT to interact with, else type 'help' or 'exit'."  
+header = "Type 'load' to choose an ADT to interact with, else type 'exit' to quit."  
 header += "\n"
 
 adtNames = []
@@ -1259,6 +1259,20 @@ class adt_wise_ui(Cmd):
 		else:
 			return "{} is not a supported type of ADT. Choose one from the available types.".format(typeOfADT)
 
+	def do_help(self, args):
+		print("For current purposes, the available commands are:\n")
+
+		availableCommands = ["load", "exit"]
+		ascMethods = {"load": self.do_load, "exit": self.do_exit}
+
+		for cmd in availableCommands:
+			# Casing the print right
+			thisCommand = cmd.title()
+	
+			# Reading command info from docstring
+			info = ascMethods[cmd].__doc__ or ''
+
+			print(thisCommand + "\n\t" + info)
 	def validADTName(self, name):
 		"""If valid returns True, else returns an error message """
 		
