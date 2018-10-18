@@ -14,8 +14,7 @@ I hope to get other ADTs includeded in time.
 
 Adapted:
 	Queue
-	Hash-Table
-
+	Binary-Tree
 ---------------------------------------
 
 If you want to contribute, feel free to tinker with the log texts for the
