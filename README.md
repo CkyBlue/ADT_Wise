@@ -10,15 +10,13 @@ Screenshots from the version on repl.it:
 ![Screenshot](Screenshot0.PNG)
 ![Screenshot](Screenshot1.PNG)
 
-I hope to get other ADTs includeded in time.
+So far I've completed the log texts for Queue and Binary-Tree only.
+I hope to get other ADTs included in time.
 
-Adapted:
-	Queue
-	Binary-Tree
 ---------------------------------------
 
 If you want to contribute, feel free to tinker with the log texts for the
-other ADTs and register them in adt_logic.
+other ADTs (hash-table, stack, linked-list) and register them in adt_logic.
 
 Refer to adt_queue to look at how self.refresh() and self.post() are being used
 for implementing the live log.
