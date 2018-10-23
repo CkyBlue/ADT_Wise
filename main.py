@@ -1,4 +1,4 @@
-import adt_wise as ui 
+import adt_wise_ui as ui 
 
 """TODO - Add undo
 Add a delete function

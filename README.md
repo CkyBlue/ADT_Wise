@@ -7,6 +7,7 @@ view there.
 
 Screenshots from the version on repl.it:
 
+![Screenshot](ADTWIse.gif)
 ![Screenshot](Screenshot0.PNG)
 ![Screenshot](Screenshot1.PNG)
 

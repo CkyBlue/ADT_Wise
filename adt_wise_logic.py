@@ -8,7 +8,8 @@ from adt_binary_tree import BinaryTree
 # Obj names would be names assigned to objects made from ADT classes
 
 # Link call name to ADT class here
-ADTS = {"queue": Queue, "binary-tree": BinaryTree}
+ADTS = {"queue": Queue, "binary-tree": BinaryTree, "stack": Stack,
+	"hash-table": HashTable, "linked-list": LinkedList}
 
 adtNames = []
 adtType = {}

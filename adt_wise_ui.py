@@ -418,6 +418,21 @@ class adt_wise_ui(Cmd):
 		else:
 			return "{} is not a supported type of ADT. Choose one from the available types.".format(typeOfADT)
 
+	def do_help(self, args):
+		print("For current purposes, the available commands are:\n")
+
+		availableCommands = ["load", "exit"]
+		ascMethods = {"load": self.do_load, "exit": self.do_exit}
+
+		for cmd in availableCommands:
+			# Casing the print right
+			thisCommand = cmd.title()
+	
+			# Reading command info from docstring
+			info = ascMethods[cmd].__doc__ or ''
+
+			print(thisCommand + "\n\t" + info)
+	
 	def validADTName(self, name):
 		"""If valid returns True, else returns an error message """
 		
@@ -460,10 +475,7 @@ class adt_wise_ui(Cmd):
 			for i in range(self.maxNumOfPrompts):
 				print("The following types of ADT are available:\n")
 
-				for ADTType in self.availableADTTypes:
-
-					typeOfADT = ADTType.title()
-					print("{type:>4}".format(type=typeOfADT) )
+				self.displayAvailableADTs()
 
 				# typeOfADT
 				typeOfADT = input("\nWhat type of ADT do you want to load? ")
@@ -517,6 +529,58 @@ class adt_wise_ui(Cmd):
 		"""Exits the program."""
 		print("Exiting.")
 		raise SystemExit
+
+	def displayAvailableADTs(self):
+		
+		numberOfHeadings = 2
+		padding = " "*4
+
+		widthForCol = 20
+		widthForIndex = 5
+		keyName = "ADTs"
+
+		# A template is made
+
+		placeholderTemplate = padding + "|"
+		demarcLength = 1
+
+		# Values to be fed for header
+
+		# Index
+		parametersForHeader = {}
+		parametersForHeader = {"Index": ""} # Header for index
+
+		placeholderTemplate += "{Index:^" + str(widthForIndex) + "}|"
+
+		demarcLength += (widthForIndex + 1)
+
+		# ADTs
+		placeholderTemplate += "{" + keyName + ":^" + str(widthForCol) + "}|"
+
+		demarcLength += (widthForCol + 1)
+
+		parametersForHeader[keyName] = keyName
+
+		# Demarcation
+		demarc = padding + "-" * demarcLength
+
+		# Print header
+		print(demarc + "\n" + placeholderTemplate.format(**parametersForHeader) + "\n" + demarc)
+
+		ADTNames = list(logic.ADTS.keys())
+
+		# Dump ADT names into template and print
+		for i in range(len(ADTNames)):
+
+			parametersForRows = {}
+			# Builds a dictionary for formatting
+
+			parametersForRows[keyName] = ADTNames[i].title()
+			parametersForRows["Index"] = ("{:^" + str(widthForIndex) + "}").format(str(i + 1))
+
+			print(placeholderTemplate.format(**parametersForRows))
+
+		print(demarc)
 
 def start():
 	promptLoop = adt_wise_ui()
