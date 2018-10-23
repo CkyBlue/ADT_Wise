@@ -10,7 +10,6 @@ Hopefully, I'll eventually get to finishing the GUI.
 Screenshots from the version on repl.it:
 
 ![Screenshot](ADTWIse.gif)
-![Screenshot](Screenshot0.PNG)
 ![Screenshot](Screenshot1.PNG)
 
 So far I've completed the log texts for Queue and Binary-Tree only.
