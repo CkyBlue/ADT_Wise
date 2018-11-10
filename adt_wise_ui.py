@@ -515,7 +515,7 @@ class adt_wise_ui(Cmd):
 			typeOfADT = typeOfADT.lower().strip()
 
 			# Create and Load 
-			adtClass = logic.getADTClassFromCallName(typeOfADT)
+			adtClass = logic.soi(typeOfADT)
 			objToUse = adtClass("Micro", self.nodeCount)
 			ADTObjectHandler(objToUse).internalLoop()
 

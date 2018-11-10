@@ -1273,6 +1273,7 @@ class adt_wise_ui(Cmd):
 			info = ascMethods[cmd].__doc__ or ''
 
 			print(thisCommand + "\n\t" + info)
+	
 	def validADTName(self, name):
 		"""If valid returns True, else returns an error message """
 		
