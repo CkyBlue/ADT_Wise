@@ -5,6 +5,8 @@ Run it through main.py. It uses a clear screen function which
 only works when running the program on a console so it'll be best to 
 view there.
 
+Currently working on building the GUI version.
+
 Screenshots from the version on repl.it:
 
 ![Screenshot](ADTWIse.gif)
