@@ -30,11 +30,15 @@ class CallableActions:
 			Name of action; Eg: 'insert',
 			Function to be controlled,
 			Funciton to which the list containing logs is sent
+
+		Use the addPrompts method to add Prompts objects
+		They contain information regarding the values to be fed into the functionToBexEcexuted
 	"""
-	def __init__(self, name, functionToExecute, logTarget):
+	def __init__(self, name, functionToExecute, logTarget, adtObj):
 		self.prompts = [] #Prompt objects
 		self.functionToExecute = functionToExecute
 		self.name = name #Eg: 'search'
+		self.adtObj = adtObj #The ADT object the functionToExecute method needs to be able to interact with
 
 		self.locked = False
 		self.processing = False
@@ -71,6 +75,7 @@ class CallableActions:
 
 		promptedValues["lock"] = self.lock
 		promptedValues["log"] = self.log
+		promptedValues["adtObj"] = self.adtObj
 
 		self.processing = True
 
@@ -86,27 +91,13 @@ class CallableActions:
 		self.processing = False
 
 if __name__ == "__main__":
-	def dummyInsert(itemToBeInserted, idToBeInserted, log, lock):
-		log("A")
-		lock()
-		log("B")
-		lock()
-		log("C")
-		lock()
-		print(itemToBeInserted, idToBeInserted)
-		lock()
-
-	def dummyValidator(data):
-		if data:
-			return True
-		else:
-			return "Error Message"
+	from dummys import dummyInsert, dummyValidator
 
 	insertAction = CallableActions("insert", dummyInsert, lambda x: print(parse(x)))
 	insertAction.addPrompt(Prompts("itemToBeInserted", "Enter item to be inserted", dummyValidator))
 	insertAction.addPrompt(Prompts("idToBeInserted", "Enter id to be inserted", dummyValidator))
 
-	insertAction.executeAssociatedFunction({"itemToBeInserted": "Ram", "idToBeInserted": "12"})
+	insertAction.executeAssociatedFunction({"obj": "String", "itemToBeInserted": "Ram", "idToBeInserted": "12"})
 
 	for i in range(4):
 		x = input()

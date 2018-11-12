@@ -27,9 +27,3 @@ class DataStructure:
 
 		self.data[key][index] = value
 
-dummyData = DataStructure("ID", "Value", "Pointer", size = 12, name = "Dummy")
-
-for i in range(12):
-	dummyData.setValue("ID", i, str(i))
-	dummyData.setValue("Value", i, "Ram" + str(i))
-	dummyData.setValue("Pointer", i, str(i + 1))

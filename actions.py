@@ -23,11 +23,15 @@ class CallableActions:
 			Name of action; Eg: 'insert',
 			Function to be controlled,
 			Funciton to which the list containing logs is sent
+
+		Use the addPrompts method to add Prompts objects
+		They contain information regarding the values to be fed into the functionToBexEcexuted
 	"""
-	def __init__(self, name, functionToExecute, logTarget):
+	def __init__(self, name, functionToExecute, logTarget, adtObj):
 		self.prompts = [] #Prompt objects
 		self.functionToExecute = functionToExecute
-		self.name = name #Eg: 'search'
+		self.name = name.lower() #Eg: 'search'
+		self.adtObj = adtObj #The ADT object the functionToExecute method needs to be able to interact with
 
 		self.locked = False
 		self.processing = False
@@ -64,6 +68,7 @@ class CallableActions:
 
 		promptedValues["lock"] = self.lock
 		promptedValues["log"] = self.log
+		promptedValues["adtObj"] = self.adtObj
 
 		self.processing = True
 
@@ -77,3 +82,4 @@ class CallableActions:
 		t.start()
 
 		self.processing = False
+		
