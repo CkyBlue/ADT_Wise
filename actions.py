@@ -23,21 +23,24 @@ class CallableActions:
 			Name of action; Eg: 'insert',
 			Function to be controlled,
 			Funciton to which the list containing logs is sent
+			Function to run after the functionToExceute finishes running
 
 		Use the addPrompts method to add Prompts objects
 		They contain information regarding the values to be fed into the functionToBexEcexuted
 	"""
-	def __init__(self, name, functionToExecute, logTarget, adtObj):
-		self.prompts = [] #Prompt objects
+	def __init__(self, name, functionToExecute, logTarget, endTarget):
+		self.prompts = [] #Prompt objects, empty list if no prompts are required
 		self.functionToExecute = functionToExecute
 		self.name = name.lower() #Eg: 'search'
-		self.adtObj = adtObj #The ADT object the functionToExecute method needs to be able to interact with
+		# self.adtObj = adtObj #The ADT object the functionToExecute method needs to be able to interact with
 
 		self.locked = False
 		self.processing = False
 
 		self.logTarget = logTarget
 		self.logTexts = []
+
+		self.endTarget = endTarget
 
 	def addPrompt(self, newPrompt):
 		self.prompts.append(newPrompt)
@@ -63,12 +66,20 @@ class CallableActions:
 	def unlock(self):
 		self.locked = False
 
+	def functionWrapper(self, **kwargs):
+		self.functionToExecute(**kwargs)
+
+		self.processing = False
+		self.endTarget()
+
 	def executeAssociatedFunction(self, promptedValues):
 		#any function to be freezed must expect keyword arguments lock and log
 
 		promptedValues["lock"] = self.lock
 		promptedValues["log"] = self.log
-		promptedValues["adtObj"] = self.adtObj
+
+		# promptedValues["adtObj"] = self.adtObj
+		# print(promptedValues)
 
 		self.processing = True
 
@@ -76,10 +87,9 @@ class CallableActions:
 		#thus valueName in the Prompts object should match variable names anticipated by function to execute
 		
 		#a seperate thread is used to keep the rest of the program from freezing with the function
-		t = threading.Thread(target = self.functionToExecute, kwargs = promptedValues) 
+		t = threading.Thread(target = self.functionWrapper, kwargs = promptedValues) 
 		t.daemon = True
 
 		t.start()
 
-		self.processing = False
 		

@@ -3,6 +3,8 @@ Refer to their individual docstrings for more information"""
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
 from kivy.uix.scrollview import ScrollView
 
 from kivy.graphics.instructions import InstructionGroup
@@ -65,10 +67,18 @@ class PromptBox(BoxLayout):
 		Fire the buildInternal method to set up the inputs and the submit button
 		Submit validates inputs, then generates error messages, or removes widget and 
 		feeds inputs to the function controlled by CallableActions object
+
+		Is divided into two Boxes: self.formArea (for inputs and the submit button)
+		and self.msgArea (for error messages)
+
+		###Consider building so that the msgArea Box is hidden and shown as appropriate
 	"""
 	def __init__(self, **kwargs):
 		self.action = kwargs["action"]
 		del kwargs["action"]
+
+		self.endTarget = kwargs["endTarget"]
+		del kwargs["endTarget"]
 
 		super(PromptBox, self).__init__(**kwargs)
 		self.clear_widgets()
@@ -144,7 +154,7 @@ class PromptBox(BoxLayout):
 				errorMessages.append(errorMsgReturnedByValidator)
 
 		if noErrors:
-			self.action.executeAssociatedFunction(values)
+			self.endTarget(self.action.name, values)
 			self.parent.remove_widget(self)
 
 		else:
@@ -216,4 +226,7 @@ class CommandsBox(BoxLayout):
 			self.add_widget(b)
 
 	def submitCmd(self, source):
+		"""Function which sends the target function the name of the relevant CallableActions object
+		after fetching the title cased version from the buttons text and turning it to lowercase"""
 		self.target(source.text.lower())
+

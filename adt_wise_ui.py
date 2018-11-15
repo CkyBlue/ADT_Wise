@@ -22,17 +22,7 @@ noPosting = False
 def clear():
 	os.system('cls' if os.name == 'nt' else 'clear')
 
-def parse(log):
-	"""Takes a log list and gives a string where the items are indivisual statements,
-	
-	Consider developing to recognize markup
-	"""
-	content = ""
 
-	for statement in log:
-		content += statement + "\n"
-
-	return content
 
 def getADTTypeFromObjName(adtName):
 	return logic.getADTTypeFromName(adtName)
