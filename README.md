@@ -32,6 +32,8 @@ lock() #The next time the method freezes, the changes made will show up, the tab
 
 -----------------------
 
+Question 6 at "https://papers.gceguide.com/A%20Levels/Computer%20Science%20(for%20final%20examination%20in%202021)%20(9608)/9608_s15_qp_41.pdf" should give you an idea of what kind of CS questions it's supposed to be helpful for.
+
 Run the command line version on browser: https://repl.it/@OverCky/ADT-Wise
 
 Screenshots from the command line version on repl.it:
