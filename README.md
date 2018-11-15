@@ -4,11 +4,11 @@ only seems to work when running the program on a command line so it'll be best t
 view there.
 
 The table shows data relevant to the ADT (index values, items values, pointer values etc.)
-The text below it tries to explain what is going to happen next. It breaks down an ADT operation
-such as insert.
-
+The text below it tries to explain what is going to happen next. 
 Each index value has a unique color and is the same across index and pointer columns. 
 This was intended to make it easier to follow the changes to pointers and index values.
+IThe program breaks down a complex ADT operation
+such as insert and let's you see how the data changes as the method moves to completion.
 
 Notice how the colors change as the explanation moves forward.
 In the actual program, the program waits for user input before moving onto the next fragment of the 
