@@ -1,7 +1,7 @@
 Run the command line version on browser: https://repl.it/@OverCky/ADT-Wise
 
 The command line version project requires the colorama library to work.
-Run it through main.py. It uses a clear screen function which 
+Run it through CLI/main.py. It uses a clear screen function which 
 only seems to work when running the program on a command line so it'll be best to 
 view there.
 
