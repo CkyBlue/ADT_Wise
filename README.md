@@ -1,5 +1,3 @@
-Run the command line version on browser: https://repl.it/@OverCky/ADT-Wise
-
 The command line version project requires the colorama library to work.
 Run it through CLI/main.py. It uses a clear screen function which 
 only seems to work when running the program on a command line so it'll be best to 
@@ -9,8 +7,14 @@ The table shows data relevant to the ADT (index values, items values, pointer va
 THe text below tries to explain what is going to happen next. It breaks down an ADT operation
 such as insert.
 
-The colors in the table are intended to make it easier to follow the changes to pointers and index values.
+Each index value has a unique color and is the same across index and pointer columns. 
+This was intended to make it easier to follow the changes to pointers and index values.
+
 Notice how the colors change as the explanation moves forward.
+In the actual program, the program waits for user input before moving onto the next fragment of the 
+ADT method so it is easier to follow.
+
+Run the command line version on browser: https://repl.it/@OverCky/ADT-Wise
 
 Screenshots from the command line version on repl.it:
 
