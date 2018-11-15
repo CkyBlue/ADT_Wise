@@ -4,7 +4,7 @@ only seems to work when running the program on a command line so it'll be best t
 view there.
 
 The table shows data relevant to the ADT (index values, items values, pointer values etc.)
-THe text below tries to explain what is going to happen next. It breaks down an ADT operation
+The text below it tries to explain what is going to happen next. It breaks down an ADT operation
 such as insert.
 
 Each index value has a unique color and is the same across index and pointer columns. 
