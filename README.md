@@ -5,6 +5,13 @@ Run it through CLI/main.py. It uses a clear screen function which
 only seems to work when running the program on a command line so it'll be best to 
 view there.
 
+The table shows data relevant to the ADT (index values, items values, pointer values etc.)
+THe text below tries to explain what is going to happen next. It breaks down an ADT operation
+such as insert.
+
+The colors in the table are intended to make it easier to follow the changes to pointers and index values.
+Notice how the colors change as the explanation moves forward.
+
 Screenshots from the command line version on repl.it:
 
 ![Screenshot](ADTWIse.gif)
