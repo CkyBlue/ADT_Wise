@@ -190,8 +190,8 @@ class Root(BoxLayout):
 		else: # Error report in case an action match is not found for some reason
 			print("Matching action not found!", actionName)			
 
-class MyApp(App):
+class intmdt10App(App):
 	def build(self):
 		return Root()
 
-MyApp().run()
+intmdt10App().run()

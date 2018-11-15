@@ -1,13 +1,18 @@
-Run on browser: https://repl.it/@OverCky/ADT-Wise
+Run the command line version on browser: https://repl.it/@OverCky/ADT-Wise
 
-The project requires the colorama library to work.
+The command line version project requires the colorama library to work.
 Run it through main.py. It uses a clear screen function which 
-only works when running the program on a console so it'll be best to 
+only seems to work when running the program on a command line so it'll be best to 
 view there.
 
-Currently working on building the GUI version.
-
-Screenshots from the version on repl.it:
+Screenshots from the command line version on repl.it:
 
 ![Screenshot](ADTWIse.gif)
 ![Screenshot](Screenshot1.PNG)
+
+The GUI version is still under work. It relies on the Kivy framework.
+The ADT backbone is also being worked from scratch for the GUI.
+
+How the GUI is coming along:
+
+![Screenshot](GUI.gif)
