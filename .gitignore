@@ -7,10 +7,11 @@ intmdt_06.py
 intmdt_07.py
 intmdt_08.py
 intmdt_09.py
-intmdt_10.py
 intmdt_11.py
 CLI/adt_redesign.py
 adt_wise_gui_test.py
-Colors.txt
+Color.txt
 bin_03.py
 bin.py
+adt_wise_gui_test.py
+__pycache__
