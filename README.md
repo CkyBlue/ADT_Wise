@@ -20,6 +20,7 @@ simple for would-be contributers. Here's what the code might like.
 
 -----------------------
 log("Explanation text") """Provide text explaining what changes are going to be made by this part of the method's algorithm"""
+
 log("Some more explanation text")
 
 lock() """Freeze the method at this point and update visuals to show added explanation text and changes made to data so far, once user gives the go, unfreeze and continue"""
