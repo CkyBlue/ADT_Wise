@@ -1,4 +1,6 @@
 import threading, time
+from kivy.uix.button import Button
+from pseudo import PseudoCode
 
 """Contains the Prompts and CallableActions objects
 which are used to control the function to be frozen"""
@@ -16,6 +18,9 @@ class Prompts:
 		self.promptMsg = promptMsg
 		self.validatorFunc = validatorFunc
 
+def Null(*args, **kwargs):
+	return None
+
 class CallableActions:
 	"""Stores information relevant to running a particular function
 		Controls freezing the function on a seperate thread
@@ -28,7 +33,11 @@ class CallableActions:
 		Use the addPrompts method to add Prompts objects
 		They contain information regarding the values to be fed into the functionToBexEcexuted
 	"""
-	def __init__(self, name, functionToExecute, logTarget, endTarget):
+	def __init__(self, name, 
+					functionToExecute = Null, 
+					logTarget = Null,
+					unlockCallBack = Null,
+					codeObj = PseudoCode()):
 		self.prompts = [] #Prompt objects, empty list if no prompts are required
 		self.functionToExecute = functionToExecute
 		self.name = name.lower() #Eg: 'search'
@@ -40,7 +49,9 @@ class CallableActions:
 		self.logTarget = logTarget
 		self.logTexts = []
 
-		self.endTarget = endTarget
+		self.unlockCallBack = unlockCallBack
+		self.codeTarget = codeTarget
+		self.codeObj = codeObj
 
 	def addPrompt(self, newPrompt):
 		self.prompts.append(newPrompt)
@@ -66,17 +77,17 @@ class CallableActions:
 	def unlock(self):
 		self.locked = False
 
-	def functionWrapper(self, **kwargs):
-		self.functionToExecute(**kwargs)
+	def light(self, indices):
+		self.codeObj.highlight(indices)
 
-		self.processing = False
-		self.endTarget()
+	def functionWrapper(self, **kwargs)ockCallBack()
 
 	def executeAssociatedFunction(self, promptedValues):
 		#any function to be freezed must expect keyword arguments lock and log
 
 		promptedValues["lock"] = self.lock
 		promptedValues["log"] = self.log
+		promptedValues["light"] = self.light
 
 		# promptedValues["adtObj"] = self.adtObj
 		# print(promptedValues)
@@ -92,4 +103,21 @@ class CallableActions:
 
 		t.start()
 
-		
+class Unfreeze_Action_Button(Button):
+	"""Used with a CallableActions object,
+		The function frozen using CallableActions periodically checks a lock Boolean
+		CallableActions class's unlock method sets the Boolean 
+		such that the frozen function can continue executing
+		Initializes with a CallableActions object reference passed through the action keyword
+	"""
+	def __init__(self, **kwargs):
+		self.action = kwargs["action"]
+		del kwargs["action"]
+
+		super(Unfreeze_Action_Button, self).__init__(**kwargs)
+
+		self.text = "Next"
+		self.bold = True
+
+	def on_press(self, *args):
+		self.action.unlock()

@@ -1,15 +1,25 @@
 class DataStructure:
-	"""Takes strings (Eg: 'id', 'pointer') as parameters and uses them as keys
+	"""Takes a list of strings (Eg: ['ID', 'Pointer']) as parameters and uses the strings as keys
 		keyword parameter size defines how long the list associated with each key is
 		keywor parameter name is the name of the data strcture
+
 		get/setValue methods take parameters key name (Eg: 'id', 'pointer') and index to access value
 		setValue takes additionally the value to be set to
 	"""
 
-	def __init__(self, *args, **kwargs):
+	def __init__(self, args, **kwargs):
 
 		self.data = {} #Dictionary where each item (Eg: 'id', 'pointer') is a key to an list 
-		self.size = kwargs["size"] #Length of each list
+		
+		self.default_size = 12 #If size parameter (look below) is missing
+
+		#For the size that is used for each list maintained by the DataStructure object to store data
+		if "size" in list(kwargs.keys()): 
+			self.size = kwargs["size"] 
+
+		else: # Default size
+			self.size = self.default_size
+
 		self.keys = args #Keys to self.data
 		self.name = kwargs["name"]
 
@@ -27,3 +37,21 @@ class DataStructure:
 
 		self.data[key][index] = value
 
+class PointerData:
+	def __init__(self, args, **kwargs):
+		self.data = {} #Dictionary where each pointer type (Eg: 'Head', 'Free') is a key to its value 
+
+		self.keys = args #Keys to self.data
+
+		for arg in args: # For each arg
+			self.data[arg] =  "-1" #Create an entry in the dictionary with the arg as key and -1 as value
+
+	def getValue(self, key): 
+		"""Retrieves value by referring to the item name (Eg: 'id', 'pointer') and index"""
+
+		return self.data[key]
+
+	def setValue(self, key, value):
+		"""Allows setting pointer value by referring to the pointer type (Eg: 'Head', 'Free')"""
+
+		self.data[key] = value

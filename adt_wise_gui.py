@@ -1,5 +1,19 @@
+### Kivy, break long sentences
+
+### A pesudocode object hasn't been sent into dummy's actionss yet
+### The logTarget here should update the source pseudocode
+### PesudoCodeBox should be capable of handling reconstruction
+
+
 ### Thoroughly Document this
+### Consider adding a pseduocodeLogger
+### Create a class for my PopUps
 ### Should output an error message saying that an action is already running if it is
+
+"""Note: The reference to an object is preserved unless the object referred to 
+is entirely overwritten. Passing in a source object to a box and modifying source's properties will
+allow the reference to source in the box to keep up. If the source object is assigned to a new object, 
+however, the reference in the box becomes disconnected. At least that's what it looked like was happening."""
 
 from kivy.app import App
 
@@ -11,34 +25,16 @@ from kivy.uix.popup import Popup
 
 from kivy.lang import Builder
 
-from dummys import dummyData, ADT
-from boxes import ScrollableLabel, PromptBox, CommandsBox
-
-from customs import DataTableColor
+from dummys import dummyData, dummyADT
+from boxes import PromptBox, CommandsBox, PseudoCodeBox
+from labels import ScrollableLabel
+from actions import Unfreeze_Action_Button
+from pseudo import PseudoCode
+from customs import Scroll_Box_For_DataBoxColor, Scroll_Box_For_PointerBox
 
 kv = """
 """
-
 Builder.load_string(kv)
-
-class UnlockButton(Button):
-	"""Used with a CallableActions object,
-		The function frozen using CallableActions periodically checks a lock Boolean
-		CallableActions class's unlock method sets the Boolean 
-		such that the frozen function can continue executing
-		Initializes with a CallableActions object reference passed through the action keyword
-	"""
-	def __init__(self, **kwargs):
-		self.action = kwargs["action"]
-		del kwargs["action"]
-
-		super(UnlockButton, self).__init__(**kwargs)
-
-		self.text = "Next"
-		self.bold = True
-
-	def on_press(self, *args):
-		self.action.unlock()
 
 class Root(BoxLayout):
 	"""The methods with target in their names are passed as callback functions
@@ -48,18 +44,23 @@ class Root(BoxLayout):
 		They contain the logic which controls decision making and control monitoring/control variables
 		For eg, promptsManager checks if another prompt is already present and decides what to do if one is
 
-		To nest and re-arrange child widgets, over-write build-internal and 
+		To nest and re-arrange child widgets, over-write build-internal
 	"""
 	def __init__(self, **kwargs):
 		super(Root, self).__init__(**kwargs)
 
 		self.promptPopUp = None
-		self.adt = ADT(self.logTarget, self.actionEndTarget)
+		self.adt = dummyADT(logTarget = self.logTarget, 
+							endTarget = self.actionEndTarget,
+							codeTarget = self.codeTarget)
 
 		self.buildInternal()
 
 	def buildInternal(self):
 		self.orientation = 'vertical'
+
+		self.actionIsRunning = False
+		self.pseudoCode = PseudoCode()
 
 		self.commandsBox = CommandsBox(actions = self.adt.actions,
 			target = self.cmdTarget)
@@ -68,10 +69,14 @@ class Root(BoxLayout):
 		self.logBox = ScrollableLabel()
 		self.add_widget(self.logBox)
 
-		self.dataTable = DataTableColor(source = self.adt.data)
+		self.pesudoCodeBox = PseudoCodeBox(source = self.pseudoCode)
+		self.add_widget(self.pesudoCodeBox)
+
+		self.dataTable = Scroll_Box_For_DataBoxColor(source = self.adt.data)
 		self.add_widget(self.dataTable)
 
-		self.actionIsRunning = False
+		self.pointerTable = Scroll_Box_For_PointerBox(source = self.adt.pointers)
+		self.add_widget(self.pointerTable)
 
 	def parse(self, logTexts):
 		"""Takes a list and gives a string where the items are indivisual statements,"""
@@ -110,13 +115,18 @@ class Root(BoxLayout):
 		self.promptedValues = promptedValues
 
 		if self.action != False:
+			self.pseudoCode = self.action.codeObj
+
+			#source needs to be re-linked because of the above overwriting
+			self.pesudoCodeBox.source = self.pseudoCode 
+			self.pesudoCodeBox.buildInternal()
 			self.navManager()
 
 		self.promptPopUp.dismiss()
 		self.promptPopUp = None
 
 	def navManager(self):
-		"""If an action is not running, create a navButton (i.e UnlockButton)
+		"""If an action is not running, create a navButton (i.e Unfreeze_Action_Button)
 			and set actionIsRunning to True
 		"""
 
@@ -127,21 +137,26 @@ class Root(BoxLayout):
 			self.actionIsRunning = True
 
 	def createNav(self):
-		self.navButton = UnlockButton(action = self.action)
+		self.navButton = Unfreeze_Action_Button(action = self.action)
 		self.add_widget(self.navButton)
 
 	def logTarget(self, logTexts):
 		self.dataTable.dataBox.updateContent()
+		self.pointerTable.pointerBox.updateContent()
 
 		text = self.parse(logTexts)
 		self.logBox.setText(text)
+
+	def codeTarget(self, indices):
+		print("Code Target Running")
+		pass
 
 	def actionEndTarget(self):
 		self.actionIsRunning = False
 		self.dataTable.dataBox.updateContent()
 		
 		self.destroyNav()
-		self.logBox.setText("")
+		# self.logBox.setText("")
 
 	def destroyNav(self):
 		if not self.actionIsRunning:
@@ -157,9 +172,14 @@ class Root(BoxLayout):
 			self.managePrompts(actionName)
 
 		else:
+			self.displayErrorMsg("An actiom is already running. It must first reach completion.")
 
-			### Deploy a dismissable error message on the GUI			
-			print("An actiom is already running. It must first reach completion.")
+	def displayErrorMsg(self, msg):
+		content = Label(text = msg)
+		self.errorPopUp = Popup(title = "Error",
+								size_hint = (0.6, 0.3),
+								content = content)
+		self.errorPopUp.open()
 
 	def createPrompt(self, action):
 		promptBox = PromptBox(action = action, 
@@ -190,8 +210,8 @@ class Root(BoxLayout):
 		else: # Error report in case an action match is not found for some reason
 			print("Matching action not found!", actionName)			
 
-class intmdt10App(App):
+class guiApp(App):
 	def build(self):
 		return Root()
 
-intmdt10App().run()
+guiApp().run()

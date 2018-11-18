@@ -5,13 +5,12 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
-from kivy.uix.scrollview import ScrollView
 
 from kivy.graphics.instructions import InstructionGroup
 from kivy.graphics.context_instructions import Color
 from kivy.graphics.vertex_instructions import Rectangle 
 
-from colors import ColorAwareLabel
+from labels import ColorAwareLabel, AltLabel, HeaderLabel
 from data import DataStructure
 
 class DataBox(BoxLayout):
@@ -28,7 +27,7 @@ class DataBox(BoxLayout):
 
 		# A DataStructure object which mirrors self.source but stores Label widgets corresponding
 		# to each data item in the source at the matching key and index position
-		self.dataStructure = DataStructure(*self.source.keys, size = self.source.size, name = "Mirror")
+		self.dataStructure = DataStructure(list(self.source.keys), size = self.source.size, name = "Mirror")
 
 		self.orientation = 'vertical'
 
@@ -43,15 +42,15 @@ class DataBox(BoxLayout):
 			for key in self.source.keys:
 
 				value = self.source.getValue(key, i)
-				l = Label(text = value)
+				l = Label(text = str(value))
 				self.dataStructure.setValue(key, i, l)
 				b.add_widget(l)
 				
 			self.add_widget(b)
 
 	def updateContent(self):
-		### The controller should run this through the logTarget function which is 
-		### called by the CallableActions object with each freeze
+		#The controller should run this through the logTarget function which is 
+		# called by the CallableActions object with each freeze
 
 		# Updates the labels accessed through self.dataStructure using the data from the source
 		for i in range(self.source.size):
@@ -60,7 +59,8 @@ class DataBox(BoxLayout):
 
 				value = self.source.getValue(key, i)
 				l = self.dataStructure.getValue(key, i)
-				l.text = value
+				
+				l.text = str(value)
 
 class PromptBox(BoxLayout):
 	"""Widget which requires a CallableActions object in the keyword parameter action
@@ -160,46 +160,6 @@ class PromptBox(BoxLayout):
 		else:
 			self.displayErrors(errorMessages)
 
-class ScrollableLabel(ScrollView):
-	"""Has a Label child which is controlled to ensure text wraps
-		Since this class inherits from ScrollView, it ensures scrolling
-		Text in the child is controlled by using get/setText methods
-
-		Use when scrolling and wrapping is nexcessary 
-		and lack of text centering is not a problem
-	"""
-
-	def __init__(self, **kwargs):
-		super(ScrollableLabel, self).__init__(**kwargs)
-
-		self.instr = InstructionGroup()
-		self.canvas.before.add(self.instr)
-	
-		self.label = Label(size_hint=(1, None))
-		self.add_widget(self.label)
-
-		# self.colorTuple = (1,  1, 1, 1)
-
-		# StackOverflow solution to ensure text wrapping
-		self.label.bind(
-			width=lambda *x: self.label.setter('text_size')(self.label, (self.label.width, None)),
-			texture_size=lambda *x: self.label.setter('height')(self.label, self.label.texture_size[1]))
-
-	# def evaluateColor(self):
-	# 	self.instr.clear()
-	# 	self.instr.add(Color(*self.colorTuple))
-	# 	self.instr.add(Rectangle(pos=self.pos, size=self.size))
-
-	# def on_size(self, *args):
-	# 	self.evaluateColor()
-
-	def setText(self, text):
-		self.label.text = text
-		# self.evaluateColor()
-
-	def getText(self):
-		return self.label.text
-
 class CommandsBox(BoxLayout):
 	"""Requires 2 keyword arguments: actions and target
 		actions is the list of CallableActions objects that should populate the CommandBox
@@ -230,3 +190,36 @@ class CommandsBox(BoxLayout):
 		after fetching the title cased version from the buttons text and turning it to lowercase"""
 		self.target(source.text.lower())
 
+class PseudoCodeBox(BoxLayout):
+	"""This box uses a PseudoCode object for a source, the source is passed through the
+		source keyword at initialization. The buildInternal method of this box differs from
+		that of most other boxes in that it was designed to allow resconstruction from a new source.
+		This is so that the same box can display pseudoCode for numerous different actions.
+
+		The PseudoCode object passed is usually controlled by a CallableActions object"""
+	def __init__(self, **kwargs):
+		self.source = kwargs["source"]
+
+		del kwargs["source"]
+		super(PseudoCodeBox, self).__init__(**kwargs)
+
+		self.labels = []
+		self.orientation = 'vertical'
+
+		self.buildInternal()
+
+	def buildInternal(self):
+		self.clear_widgets()
+		for statement in self.source.statements:
+
+			l = AltLabel()
+			l.text = statement["statement"]
+			l.active = statement["activity"]
+
+			self.labels.append(l)	
+			self.add_widget(l)
+
+	def updateContent(self):
+		for index in range(len(self.labels)):
+
+			self.labels[index].active = self.source.statements[index]["activity"]
