@@ -1,5 +1,6 @@
-"""Contains container classes,
-Refer to their individual docstrings for more information"""
+"""Contains base container classes,
+Refer to their individual docstrings for more information
+"""
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
@@ -205,7 +206,7 @@ class PseudoCodeBox(BoxLayout):
 		that of most other boxes in that it was designed to allow resconstruction from a new source.
 		This is so that the same box can display pseudoCode for numerous different actions.
 
-		The PseudoCode object passed is usually controlled by a CallableActions object"""
+		The PseudoCode object passed is usually provided by a CallableActions object"""
 	def __init__(self, **kwargs):
 		self.source = kwargs["source"]
 
@@ -243,7 +244,9 @@ class PseudoCodeBox(BoxLayout):
 
 class ScrollBox(ScrollView):
 	"""A ScrollView object which contains a box widget inside
-		Ensure scrolling and a white background"""
+		Ensures scrolling on a white background
+
+		Remove the on_size method to prevent the background color from being implemented"""
 
 	def __init__(self, **kwargs):
 		super(ScrollBox, self).__init__(**kwargs)

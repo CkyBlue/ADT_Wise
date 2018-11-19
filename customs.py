@@ -95,7 +95,7 @@ class Scroll_Box_For_DataBoxColor(ScrollView):
 		self.instr.add(Rectangle(pos=self.pos, size=self.size))
 
 class VariableBox(BoxLayout):
-	"""Takes a PointerData object as parameter through the source keyword
+	"""Takes a VariableData object as parameter through the source keyword
 		Develops a mirror object to track the label associated with each data item
 		updateContent method reads the source Pointer again and updates the label contents
 	"""
@@ -172,34 +172,12 @@ class VariableBox(BoxLayout):
 
 class PointerBox(VariableBox):
 	"""Takes a PointerData object as parameter through the source keyword
-		Develops a mirror object to track the label associated with each data item
+		Develops a mirror (VariableData) object to track the label associated with each data item
 		updateContent method reads the source Pointer again and updates the label contents
+
+		Differs from Variable box in that the text 'Pointer' is added automatically to PointerData's
+		keys ('Free', 'Head') and that the header text mentions 'Pointer' istead of 'Variable'
 	"""
-	# def __init__(self, **kwargs):
-	# 	# The DataStructure object to be used for as the source of data
-	# 	self.source = kwargs["source"]
-
-	# 	del kwargs["source"]
-	# 	super(PointerBox, self).__init__(**kwargs)
-
-	# 	# A PointerBox object which mirrors self.source but stores Label widgets corresponding
-	# 	# to each data item in the source at the matching key and index position
-	# 	self.mirror = PointerData(self.source.keys)
-
-	# 	self.orientation = 'vertical'
-
-	# 	# For the purpose of ensuring that the widget works as
-	# 	#  a child of the ScrollView object
-	# 	#  widget's height is binded to and set as the minimum height
-	# 	self.size_hint_y = None
-	# 	self.bind(minimum_height = self.setter('height'))
-
-	# 	# Customizing the visuals
-
-	# 	self.spacing = "5px"
-	# 	self.padding = "5px"
-
-	# 	self.buildInternal()
 
 	def buildInternal(self):
 		#Creates a box-layout which serves as the header
@@ -245,90 +223,3 @@ class PointerBox(VariableBox):
 			value = self.source.getValue(key)
 			l = self.mirror.getValue(key)
 			l.text = str(value) 
-
-class ScrollBox(ScrollView):
-	"""A ScrollView object which contains a box widget inside
-		Ensure scrolling and a white background"""
-
-	def __init__(self, **kwargs):
-		self.bgColor_1 = (1, 1, 1, 1) #White
-
-		self.instr = InstructionGroup()
-		self.canvas.before.add(self.instr)
-
-	def on_size(self, *args):
-		self.instr.clear()
-
-		self.instr.add(Color(*self.bgColor_1)) 
-		self.instr.add(Rectangle(pos=self.pos, size=self.size))
-
-class Scroll_Box_For_PointerBox(ScrollView):
-	"""A ScrollView object which contains a PointerBox widget inside
-	DataStructure to be used by the PointerBox widget is passed in the source keyword"""
-	def __init__(self, **kwargs):
-		self.source = kwargs["source"]
-
-		del kwargs["source"]
-		super(Scroll_Box_For_PointerBox, self).__init__(**kwargs)
-
-		self.pointerBox = PointerBox(source = self.source)
-		self.add_widget(self.pointerBox)	
-
-		self.bgColor_1 = (1, 1, 1, 1) #White
-
-		self.instr = InstructionGroup()
-		self.canvas.before.add(self.instr)
-
-	def on_size(self, *args):
-		self.instr.clear()
-
-		self.instr.add(Color(*self.bgColor_1)) 
-		self.instr.add(Rectangle(pos=self.pos, size=self.size))
-
-
-
-class Scroll_Box_For_VariableBox(ScrollView):
-	"""A ScrollView object which contains a VariableBox widget inside
-	DataStructure to be used by the VariableBox widget is passed in the source keyword"""
-	def __init__(self, **kwargs):
-		self.source = kwargs["source"]
-
-		del kwargs["source"]
-		super(Scroll_Box_For_VariableBox, self).__init__(**kwargs)
-
-		self.variableBox = VariableBox(source = self.source)
-		self.add_widget(self.variableBox)	
-
-		self.bgColor_1 = (1, 1, 1, 1) #White
-
-		self.instr = InstructionGroup()
-		self.canvas.before.add(self.instr)
-
-	def on_size(self, *args):
-		self.instr.clear()
-
-		self.instr.add(Color(*self.bgColor_1)) 
-		self.instr.add(Rectangle(pos=self.pos, size=self.size))
-
-class Scroll_Box_For_Pseudo(ScrollView):
-	"""A ScrollView object which contains a PointerBox widget inside
-	DataStructure to be used by the PointerBox widget is passed in the source keyword"""
-	def __init__(self, **kwargs):
-		self.source = kwargs["source"]
-
-		del kwargs["source"]
-		super(Scroll_Box_For_VariableBox, self).__init__(**kwargs)
-
-		self.variableBox = VariableBox(source = self.source)
-		self.add_widget(self.variableBox)	
-
-		self.bgColor_1 = (1, 1, 1, 1) #White
-
-		self.instr = InstructionGroup()
-		self.canvas.before.add(self.instr)
-
-	def on_size(self, *args):
-		self.instr.clear()
-
-		self.instr.add(Color(*self.bgColor_1)) 
-		self.instr.add(Rectangle(pos=self.pos, size=self.size))

@@ -1,4 +1,21 @@
 class PseudoCode:
+	"""Contains the pseudocode statements that are associated with each action handled by a Operations class
+		Since it was felt necessary to be able to highlight certain portion of the pseudocode text to
+		improve the use of the program for teaching algorithms, a solution has been implemented as follows.
+
+		Each statement is a dictionary entry for the 'statement' key, the dictionary contains a Boolean 
+		entry for the 'activity' key as flag for whether the statement should be highlighted.
+
+		The method extract uses a string to produce the pseudocode dictionary
+		It splits the string through the new-line character
+
+		The method highlight takes a list of index values (with 1 corresponding to the first line in
+		the read string) and highlights those statements after deactivating all
+
+		If an invalid index is passed, the 0th index statement (which is blank) lights up
+
+		Is initialized with a single blank statement (index 0)
+		"""
 	def __init__(self):
 		""""A list of strings, each string is a seperate line,	the list is prepared by the extract method
 			One additional 0 index entry is added in the beginning of the statements fetched by extract.

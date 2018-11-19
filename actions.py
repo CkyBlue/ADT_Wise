@@ -1,11 +1,11 @@
-### Set things up so that log and code target rely on the single unlockCallBack method
-
 import threading, time
 from kivy.uix.button import Button
 from pseudo import PseudoCode
 
-"""Contains the Prompts and CallableActions objects
-which are used to control the function to be frozen"""
+"""The Prompts, CallableActions and Unfreeze_Action_Button objects
+are used to control the function to be frozen.
+
+Freezing is achieved through multi-threading."""
 
 class Prompts:
 	"""An object to store information relevant to an input for the CallableActions object
@@ -27,23 +27,29 @@ class CallableActions:
 	"""Stores information relevant to running a particular function
 		Controls freezing the function on a seperate thread
 		Parameters:
-			Name of action; Eg: 'insert',
-			Function to be controlled,
-			Funciton to which the list containing logs is sent
-			Function to run after the functionToExceute finishes running
+			name = Name of action; Eg: 'insert', needs to be unique for a single Operations object
+			functionToExecute = Function to be controlled,
+			lockCallBack = Funciton  which is run everytime a lock is set, the list 
+				containing logs is sent to it before being cleared
+			endTarget = Function to run after the functionToExceute finishes running
+			codeObj = PseudoCode object which is associated with the functionToExecute function
 
 		Use the addPrompts method to add Prompts objects
 		They contain information regarding the values to be fed into the functionToBexEcexuted
+
+		This class is responsible for providing functionToExecute functions with the log, lock and light
+		functions that add text to log, freeze the function and highlight certain statements in the PseudoCode
+		object respectively
 	"""
 	def __init__(self, name, 
 					functionToExecute = Null, 
 					lockCallBack = Null,
 					endTarget = Null,
 					codeObj = PseudoCode()):
+
 		self.prompts = [] #Prompt objects, empty list if no prompts are required
 		self.functionToExecute = functionToExecute
 		self.name = name.lower() #Eg: 'search'
-		# self.adtObj = adtObj #The ADT object the functionToExecute method needs to be able to interact with
 
 		self.locked = False
 		self.processing = False

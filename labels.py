@@ -59,6 +59,7 @@ class ColorAwareLabel(Label):
 		"""
 
 	def __init__(self, **kwargs):
+		self.instr = InstructionGroup()
 		super(ColorAwareLabel, self).__init__(**kwargs)
 
 		self.colorRef = KeyToColor()
@@ -66,8 +67,6 @@ class ColorAwareLabel(Label):
 		self.font_size = 14
 
 		self.colorTuple = self.colorRef.getColor(self.text)
-
-		self.instr = InstructionGroup()
 		self.canvas.before.add(self.instr)
 
 	def evaluateColor(self):

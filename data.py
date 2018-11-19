@@ -1,3 +1,14 @@
+"""These classes are used to store data, DataStructure tracks using indices in addition to keys 
+(e.g item=>'Left Pointer', index=>"6")
+
+VariableData and PointerData rely only on keys
+
+Instead having too many methods: getLeftPointer, getIndex, etc
+A single get/set pair is used with keys, and indices if applicable  
+
+These form the source for many box widgets
+"""
+
 class DataStructure:
 	"""Takes a list of strings (Eg: ['ID', 'Pointer']) as parameters and uses the strings as keys
 		keyword parameter size defines how long the list associated with each key is

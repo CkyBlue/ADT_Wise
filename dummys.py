@@ -13,6 +13,7 @@ dummyData = DataStructure(["Index", "Value", "Pointer"], name = "Dummy")
 def Null(*args, **kwargs):
 	return None
 
+### Later on use a base Operations class instead of ADT class
 class dummyADT:
 	"""Ensure that the CallableActions objects have unique names
 		The functions that go as parameters into CallableActions are preferably methods of this class
