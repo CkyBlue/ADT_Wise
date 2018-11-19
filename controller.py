@@ -1,43 +1,16 @@
-### Kivy, break long sentences
-
-### A pesudocode object hasn't been sent into dummy's actionss yet
-### The lockCallBack here should update the source pseudocode
-### PesudoCodeBox should be capable of handling reconstruction
-
-
-### Thoroughly Document this
-### Consider adding a pseduocodeLogger
-### Create a class for my PopUps
-### Should output an error message saying that an action is already running if it is
-
-"""Note: The reference to an object is preserved unless the object referred to 
-is entirely overwritten. Passing in a source object to a box and modifying source's properties will
-allow the reference to source in the box to keep up. If the source object is assigned to a new object, 
-however, the reference in the box becomes disconnected. At least that's what it looked like was happening."""
-
-from kivy.app import App
-
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.textinput import TextInput
-from kivy.uix.label import Label
-from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 
-from kivy.lang import Builder
-
-from dummys import dummyData, dummyADT
-from boxes import PromptBox, CommandsBox, PseudoCodeBox
+from boxes import PromptBox, CommandsBox, PseudoCodeBox, ScrollBox
 from labels import ScrollableLabel
+
 from actions import Unfreeze_Action_Button
+from customs import PointerBox, DataBoxColor
+
 from pseudo import PseudoCode
-from customs import Scroll_Box_For_DataBoxColor, Scroll_Box_For_PointerBox
 
-kv = """
-"""
-Builder.load_string(kv)
-
-class Root(BoxLayout):
-	"""The methods with target in their names are passed as callback functions
+class Controller(BoxLayout):
+	"""The methods with target in their names are used as callback functions
 		The rest of their name gives information regarding what event they are associated with
 
 		Manager functions (those with manage in their names) are controlled by target functions
@@ -45,37 +18,57 @@ class Root(BoxLayout):
 		For eg, promptsManager checks if another prompt is already present and decides what to do if one is
 
 		To nest and re-arrange child widgets, over-write build-internal
+
+		Those methods that have '## Over-writable' written on top of them are probably the only one's
+		you might need to overwrite after inheriting 
+
+		The source keyword here does not take in an object but a class definition based on 
+		the Operations class. The source property is then overwritten by an object created from the class
+
 	"""
 	def __init__(self, **kwargs):
-		super(Root, self).__init__(**kwargs)
+		self.source = kwargs["source"]
+
+		del kwargs["source"]
+		super(Controller, self).__init__(**kwargs)
 
 		self.promptPopUp = None
-		self.adt = dummyADT(lockCallBack = self.lockCallBack, 
-							endTarget = self.actionEndTarget)
-
-		self.buildInternal()
-
-	def buildInternal(self):
-		self.orientation = 'vertical'
 
 		self.actionIsRunning = False
 		self.pseudoCode = PseudoCode()
 
-		self.commandsBox = CommandsBox(actions = self.adt.actions,
+		self.source = self.source(lockCallBack = self.lockCallBack, 
+		 					actionEndTarget = self.actionEndTarget)
+
+		self.buildInternal()
+
+	## Over-writable
+	def buildInternal(self):
+		self.orientation = 'vertical'
+
+		self.commandsBox = CommandsBox(actions = self.source.actions,
 			target = self.cmdTarget)
 		self.add_widget(self.commandsBox)
 
 		self.logBox = ScrollableLabel()
 		self.add_widget(self.logBox)
 
+		print(self.pseudoCode.statements)
+
 		self.pesudoCodeBox = PseudoCodeBox(source = self.pseudoCode)
-		self.add_widget(self.pesudoCodeBox)
+		self.pseudoCodeScrollBox = ScrollBox()
+		self.pseudoCodeScrollBox.add_widget(self.pesudoCodeBox)
+		self.add_widget(self.pseudoCodeScrollBox)
 
-		self.dataTable = Scroll_Box_For_DataBoxColor(source = self.adt.data)
-		self.add_widget(self.dataTable)
+		self.dataTable = DataBoxColor(source = self.source.data)
+		self.dataTableScrollBox = ScrollBox()
+		self.dataTableScrollBox.add_widget(self.dataTable)
+		self.add_widget(self.dataTableScrollBox)
 
-		self.pointerTable = Scroll_Box_For_PointerBox(source = self.adt.pointers)
-		self.add_widget(self.pointerTable)
+		self.pointerTable = PointerBox(source = self.source.pointers)
+		self.pointerTableScrollBox = ScrollBox()
+		self.pointerTableScrollBox.add_widget(self.pointerTable)
+		self.add_widget(self.pointerTableScrollBox)
 
 	def parse(self, logTexts):
 		"""Takes a list and gives a string where the items are indivisual statements,"""
@@ -103,7 +96,7 @@ class Root(BoxLayout):
 
 		name = name.lower()
 
-		for action in self.adt.actions:
+		for action in self.source.actions:
 			if action.name == name:
 				return action
 
@@ -139,17 +132,21 @@ class Root(BoxLayout):
 		self.navButton = Unfreeze_Action_Button(action = self.action)
 		self.add_widget(self.navButton)
 
+	## Over-writable
 	def lockCallBack(self, logTexts):
-		self.dataTable.dataBox.updateContent()
-		self.pointerTable.pointerBox.updateContent()
+		self.dataTable.updateContent()
+		self.pointerTable.updateContent()
 		self.pesudoCodeBox.updateContent()
 
 		text = self.parse(logTexts)
 		self.logBox.setText(text)
 
+	## Over-writable
 	def actionEndTarget(self):
 		self.actionIsRunning = False
+
 		self.dataTable.dataBox.updateContent()
+		self.pointerTable.pointerBox.updateContent()
 		
 		self.destroyNav()
 		# self.logBox.setText("")
@@ -188,7 +185,6 @@ class Root(BoxLayout):
 
 	def onPromptDismiss(self, *args):
 		self.promptPopUp = None
-		print("Dismissed") ### For Monitoring
 
 	def managePrompts(self, actionName):
 		if self.promptPopUp != None:
@@ -204,10 +200,4 @@ class Root(BoxLayout):
 				self.promptEndTarget(actionName, {})
 
 		else: # Error report in case an action match is not found for some reason
-			print("Matching action not found!", actionName)			
-
-class guiApp(App):
-	def build(self):
-		return Root()
-
-guiApp().run()
+			displayErrorMsg("Action '{}' not found!".format(actionName))			

@@ -12,17 +12,21 @@ class AltLabel(Label):
 	"""		"""
 	active = BooleanProperty(False)
 	def __init__(self, **kwargs):
-		super(AltLabel, self).__init__(**kwargs)
+		self.instr = InstructionGroup()
+		self.offColor = (1, 1, 1, 1)
+		self.onColor = (0.8, 0.8, 0.8, 1)
 
-		self.onColor = (1, 1, 1, 1)
-		self.offColor = (0.8, 0.8, 0.8, 1)
+		super(AltLabel, self).__init__(**kwargs)
 
 		self.bold = False
 		self.font_size = 14
 
-		self.color = (0, 0, 0, 1)
+		self.halign="left"
+		self.valign="middle"
 
-		self.instr = InstructionGroup()
+		self.size_hint=(1.0, None)
+
+		self.color = (0, 0, 0, 1)
 		self.canvas.before.add(self.instr)
 
 	def on_active(self, *args):

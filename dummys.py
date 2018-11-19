@@ -20,31 +20,27 @@ class dummyADT:
 		the ADTs data structure without additional adt parameters
 	"""
 	def __init__(self, 
-				logTarget = Null, 
-				unlockCallBack = Null, 
-				codeTarget = Null):
+				lockCallBack = Null, 
+				actionEndTarget = Null):
 
 		self.data = dummyData
 		self.pointers = PointerData(["Head", "Tail", "Free"])
 
-		self.logTarget = logTarget
-		self.unlockCallBack = unlockCallBack
-		self.codeTarget = codeTarget
+		self.lockCallBack = lockCallBack
+		self.endTarget = actionEndTarget
 
 		insert = CallableActions(name = 'insert', 
 								functionToExecute = self.dummyInsert, 
-								logTarget = self.logTarget, 
-								unlockCallBack = self.unlockCallBack,
-								codeTarget = self.codeTarget,
+								lockCallBack = self.lockCallBack,
+								endTarget = self.endTarget,
 								codeObj = self.pseudoForInsert())
 
 		insert.addPrompt(Prompts("itemToBeInserted", "Item", dummyValidator))
 
 		remove = CallableActions(name = 'remove', 
-								functionToExecute = self.dummyRemove, 
-								logTarget = self.logTarget, 
-								unlockCallBack = self.unlockCallBack,
-								codeTarget = self.codeTarget,
+								functionToExecute = self.dummyRemove,  
+								lockCallBack = self.lockCallBack,
+								endTarget = self.endTarget,
 								codeObj = self.pseudoForInsert())
 
 		self.actions = [insert, remove]
@@ -63,12 +59,13 @@ class dummyADT:
 	def dummyInsert(self, itemToBeInserted, log, lock, light):
 		log("Changing Index and Free Pointer")
 		lock()
-		light([0, 1, 3])
+		light([1, 2])
 		self.pointers.setValue("Free", "12")
 		self.data.setValue("Index", 0, "12")
 
 		log("Changing Value")
 		lock()
+		light([3, 4])
 		self.data.setValue("Value", 0, itemToBeInserted)
 
 		log("Changing Pointer")
@@ -91,8 +88,6 @@ class dummyADT:
 
 	def initializeDataStructure(self):
 		pass
-
-
 
 for i in range(12):
 	dummyData.setValue("Index", i, str(i))

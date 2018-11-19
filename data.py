@@ -37,21 +37,29 @@ class DataStructure:
 
 		self.data[key][index] = value
 
-class PointerData:
+class VariableData:
+	"""Behaves in a way similar to DatStructure"""
 	def __init__(self, args, **kwargs):
-		self.data = {} #Dictionary where each pointer type (Eg: 'Head', 'Free') is a key to its value 
+		self.data = {} #Dictionary where each variable name is a key to its value 
 
 		self.keys = args #Keys to self.data
 
 		for arg in args: # For each arg
-			self.data[arg] =  "-1" #Create an entry in the dictionary with the arg as key and -1 as value
+			self.data[arg] =  "" #Create an entry in the dictionary with the arg as key and "" as value
 
 	def getValue(self, key): 
-		"""Retrieves value by referring to the item name (Eg: 'id', 'pointer') and index"""
+		"""Retrieves value by referring to the variable name and index"""
 
 		return self.data[key]
 
 	def setValue(self, key, value):
-		"""Allows setting pointer value by referring to the pointer type (Eg: 'Head', 'Free')"""
+		"""Allows setting pointer value by referring to the variable type"""
 
 		self.data[key] = value
+
+class PointerData(VariableData):
+	def __init__(self, args, **kwargs):
+		super(PointerData, self).__init__(args, **kwargs)
+
+		for arg in args: # For each arg
+			self.data[arg] =  "-1"

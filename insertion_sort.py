@@ -1,19 +1,3 @@
-### Kivy, break long sentences
-
-### A pesudocode object hasn't been sent into dummy's actionss yet
-### The lockCallBack here should update the source pseudocode
-### PesudoCodeBox should be capable of handling reconstruction
-
-
-### Thoroughly Document this
-### Consider adding a pseduocodeLogger
-### Create a class for my PopUps
-### Should output an error message saying that an action is already running if it is
-
-"""Note: The reference to an object is preserved unless the object referred to 
-is entirely overwritten. Passing in a source object to a box and modifying source's properties will
-allow the reference to source in the box to keep up. If the source object is assigned to a new object, 
-however, the reference in the box becomes disconnected. At least that's what it looked like was happening."""
 
 from kivy.app import App
 
@@ -205,9 +189,3 @@ class Root(BoxLayout):
 
 		else: # Error report in case an action match is not found for some reason
 			print("Matching action not found!", actionName)			
-
-class guiApp(App):
-	def build(self):
-		return Root()
-
-guiApp().run()

@@ -5,6 +5,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
+from kivy.uix.scrollview import ScrollView
 
 from kivy.graphics.instructions import InstructionGroup
 from kivy.graphics.context_instructions import Color
@@ -24,6 +25,12 @@ class DataBox(BoxLayout):
 
 		del kwargs["source"]
 		super(DataBox, self).__init__(**kwargs)
+
+		# For the purpose of ensuring that the widget works as
+		#  a child of the ScrollView object
+		#  widget's height is binded to and set as the minimum height
+		self.size_hint_y = None
+		self.bind(minimum_height = self.setter('height'))
 
 		# A DataStructure object which mirrors self.source but stores Label widgets corresponding
 		# to each data item in the source at the matching key and index position
@@ -191,7 +198,9 @@ class CommandsBox(BoxLayout):
 		self.target(source.text.lower())
 
 class PseudoCodeBox(BoxLayout):
-	"""This box uses a PseudoCode object for a source, the source is passed through the
+	"""###Set it up for inheritance and move customized visuals to inheriting custom class
+
+		This box uses a PseudoCode object for a source, the source is passed through the
 		source keyword at initialization. The buildInternal method of this box differs from
 		that of most other boxes in that it was designed to allow resconstruction from a new source.
 		This is so that the same box can display pseudoCode for numerous different actions.
@@ -203,6 +212,12 @@ class PseudoCodeBox(BoxLayout):
 		del kwargs["source"]
 		super(PseudoCodeBox, self).__init__(**kwargs)
 
+		# For the purpose of ensuring that the widget works as
+		#  a child of the ScrollView object
+		#  widget's height is binded to and set as the minimum height
+		self.size_hint_y = None
+		self.bind(minimum_height = self.setter('height'))
+
 		self.labels = []
 		self.orientation = 'vertical'
 
@@ -210,9 +225,11 @@ class PseudoCodeBox(BoxLayout):
 
 	def buildInternal(self):
 		self.clear_widgets()
+		self.labels = []
+
 		for statement in self.source.statements:
 
-			l = AltLabel()
+			l = AltLabel(size_hint_y = None ,height = "40px")
 			l.text = statement["statement"]
 			l.active = statement["activity"]
 
@@ -223,3 +240,21 @@ class PseudoCodeBox(BoxLayout):
 		for index in range(len(self.labels)):
 
 			self.labels[index].active = self.source.statements[index]["activity"]
+
+class ScrollBox(ScrollView):
+	"""A ScrollView object which contains a box widget inside
+		Ensure scrolling and a white background"""
+
+	def __init__(self, **kwargs):
+		super(ScrollBox, self).__init__(**kwargs)
+
+		self.bgColor_1 = (1, 1, 1, 1) #White
+
+		self.instr = InstructionGroup()
+		self.canvas.before.add(self.instr)
+
+	def on_size(self, *args):
+		self.instr.clear()
+
+		self.instr.add(Color(*self.bgColor_1)) 
+		self.instr.add(Rectangle(pos=self.pos, size=self.size))

@@ -34,9 +34,15 @@ class PseudoCode:
 	def highlight(self, indices):
 		# Parameter indices is a list of index values for which statements need to be highlighted
 
+		self.deactivateAll()
+
 		for index in indices: # For each index
 			if str(index).isdigit(): # If it is a number value
 				self.activate(int(index)) # Try to activate it
+
+	def deactivateAll(self):
+		for statement in self.statements:
+			statement["activity"] = False
 
 	def activate(self, index):
 		# Activate the entry at a particular index

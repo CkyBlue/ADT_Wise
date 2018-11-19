@@ -1,3 +1,5 @@
+### Set things up so that log and code target rely on the single unlockCallBack method
+
 import threading, time
 from kivy.uix.button import Button
 from pseudo import PseudoCode
@@ -35,8 +37,8 @@ class CallableActions:
 	"""
 	def __init__(self, name, 
 					functionToExecute = Null, 
-					logTarget = Null,
-					unlockCallBack = Null,
+					lockCallBack = Null,
+					endTarget = Null,
 					codeObj = PseudoCode()):
 		self.prompts = [] #Prompt objects, empty list if no prompts are required
 		self.functionToExecute = functionToExecute
@@ -46,11 +48,10 @@ class CallableActions:
 		self.locked = False
 		self.processing = False
 
-		self.logTarget = logTarget
+		self.lockCallBack = lockCallBack
 		self.logTexts = []
 
-		self.unlockCallBack = unlockCallBack
-		self.codeTarget = codeTarget
+		self.endTarget = endTarget
 		self.codeObj = codeObj
 
 	def addPrompt(self, newPrompt):
@@ -60,7 +61,7 @@ class CallableActions:
 		"""Freezes the calling function by using a slowly looping infinite loop
 		which continuously checks if the lock has been removed by a user action
 		signalling that the function should unfreeze"""
-		self.logTarget(self.logTexts)
+		self.lockCallBack(self.logTexts)
 		self.logTexts = []
 
 		self.locked = True
@@ -80,7 +81,11 @@ class CallableActions:
 	def light(self, indices):
 		self.codeObj.highlight(indices)
 
-	def functionWrapper(self, **kwargs)ockCallBack()
+	def functionWrapper(self, **kwargs):
+		self.functionToExecute(**kwargs)
+
+		self.processing = False
+		self.endTarget()
 
 	def executeAssociatedFunction(self, promptedValues):
 		#any function to be freezed must expect keyword arguments lock and log
