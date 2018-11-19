@@ -1,16 +1,17 @@
+The framework being worked here is meant to allow easily breaking down a complex algorithm such as an ADT operation
+like 'insert into Queue' and let you see how the data changes as the method moves to completion.
+
+The GUI version at work hopes to take it further with an additional pseudocode window where the
+pseudocode (code not adhering to any strict syntax) relevant is highlighted.
 
 Screenshot gif of CLI implementation below.
 
-The table shows data relevant to an algorithm (variable values, index values, items values, pointer values etc.)
+There the table shows data relevant to an algorithm (variable values, index values, items values, pointer values etc.)
 The text below it tries to explain what is going to happen next in the algorithm. 
+
+Notice how the colors of the cells (in the following gifs) change as the explanation moves forward.
 Each index cell has a unique color and the color is the same across index and pointer columns. 
 This was intended to make it easier to follow the changes to pointers and index values.
-
-The framework implemented allows easily breaking down a complex algorithm such as an ADT operation
-like 'insert into Queue' and let's you see how the data changes as the method moves to completion.
-
-The GUI version at work hopes to take it further with an additional pseudocode window where the
-pseudocode (code not associated with any particuar programming language) relevant is highlighted.
 
 Hopefully, it should be possible to extend the use of the framework to make any type of algorithm which 
 controls a lot of data easier to understand and follow along with.
@@ -18,14 +19,12 @@ controls a lot of data easier to understand and follow along with.
 I think I'll try to produce a complete working program for an Insertion sort soon to show
 what the framework can do and how it makes it easy to do that in code.
 
-Notice how the colors of the cells (in the following gifs) change as the explanation moves forward.
-
 The command line version project requires the colorama library to work.
 Run it through CLI/main.py. It uses a clear screen function which 
 only seems to work when running the program on a command line so it'll be best to 
 view there. The function is different for the repl.it version which is linked below.
 
-The way I've set things up for breaking down, explaining and freezing algorithms hopwfully will also make the task
+The way I've set things up for breaking down, explaining and freezing algorithms hopefully will also make the task
 of setting up the explanation and freeze points within a function simple. Here's what the code might look like.
 
 -----------------------
