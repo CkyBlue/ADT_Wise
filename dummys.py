@@ -1,6 +1,5 @@
 from data import DataStructure, PointerData
-from actions import Prompts, CallableActions
-from pseudo import PseudoCode
+from actions import Prompts, CallableActions, PseudoCode
 
 def dummyValidator(data):
 	if data:

@@ -1,13 +1,14 @@
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
+from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 
 from boxes import PromptBox, CommandsBox, PseudoCodeBox, ScrollBox
 from labels import ScrollableLabel
 
-from actions import Unfreeze_Action_Button
+from actions import Unfreeze_Action_Button, PseudoCode
 from customs import PointerBox, DataBoxColor
-
-from pseudo import PseudoCode
 
 class Controller(BoxLayout):
 	"""The methods with target in their names are used as callback functions
@@ -33,6 +34,7 @@ class Controller(BoxLayout):
 		super(Controller, self).__init__(**kwargs)
 
 		self.promptPopUp = None
+		self.navButton = None
 
 		self.actionIsRunning = False
 		self.pseudoCode = PseudoCode()
@@ -52,23 +54,11 @@ class Controller(BoxLayout):
 
 		self.logBox = ScrollableLabel()
 		self.add_widget(self.logBox)
-
-		print(self.pseudoCode.statements)
-
-		self.pesudoCodeBox = PseudoCodeBox(source = self.pseudoCode)
+		
+		self.pseudoCodeBox = PseudoCodeBox(source = self.pseudoCode)
 		self.pseudoCodeScrollBox = ScrollBox()
-		self.pseudoCodeScrollBox.add_widget(self.pesudoCodeBox)
+		self.pseudoCodeScrollBox.add_widget(self.pseudoCodeBox)
 		self.add_widget(self.pseudoCodeScrollBox)
-
-		self.dataTable = DataBoxColor(source = self.source.data)
-		self.dataTableScrollBox = ScrollBox()
-		self.dataTableScrollBox.add_widget(self.dataTable)
-		self.add_widget(self.dataTableScrollBox)
-
-		self.pointerTable = PointerBox(source = self.source.pointers)
-		self.pointerTableScrollBox = ScrollBox()
-		self.pointerTableScrollBox.add_widget(self.pointerTable)
-		self.add_widget(self.pointerTableScrollBox)
 
 	def parse(self, logTexts):
 		"""Takes a list and gives a string where the items are indivisual statements,"""
@@ -110,11 +100,13 @@ class Controller(BoxLayout):
 			self.pseudoCode = self.action.codeObj
 
 			#source needs to be re-linked because of the above overwriting
-			self.pesudoCodeBox.source = self.pseudoCode 
-			self.pesudoCodeBox.buildInternal()
+			self.pseudoCodeBox.source = self.pseudoCode 
+			self.pseudoCodeBox.buildInternal()
 			self.navManager()
 
-		self.promptPopUp.dismiss()
+		if self.promptPopUp != None:
+			self.promptPopUp.dismiss()
+	
 		self.promptPopUp = None
 
 	def navManager(self):
@@ -129,14 +121,18 @@ class Controller(BoxLayout):
 			self.actionIsRunning = True
 
 	def createNav(self):
-		self.navButton = Unfreeze_Action_Button(action = self.action)
+		self.navButton = Unfreeze_Action_Button(action = self.action, endTarget = self.navEndTarget)
 		self.add_widget(self.navButton)
+
+	def navEndTarget(self):
+		self.actionIsRunning = False
+
+		if self.navButton != None:
+			self.navButton = None
 
 	## Over-writable
 	def lockCallBack(self, logTexts):
-		self.dataTable.updateContent()
-		self.pointerTable.updateContent()
-		self.pesudoCodeBox.updateContent()
+		self.pseudoCodeBox.updateContent()
 
 		text = self.parse(logTexts)
 		self.logBox.setText(text)
@@ -144,16 +140,14 @@ class Controller(BoxLayout):
 	## Over-writable
 	def actionEndTarget(self):
 		self.actionIsRunning = False
-
-		self.dataTable.dataBox.updateContent()
-		self.pointerTable.pointerBox.updateContent()
 		
 		self.destroyNav()
 		# self.logBox.setText("")
 
 	def destroyNav(self):
-		if not self.actionIsRunning:
+		if not self.actionIsRunning and self.navButton != None:
 			self.navButton.parent.remove_widget(self.navButton)
+			self.navButton = None
 
 	def cmdTarget(self, actionName):
 		"""Recieves name property of the relevant CallableActions object 

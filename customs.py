@@ -71,29 +71,6 @@ class DataBoxColor(DataBox):
 		self.buildHeader()
 		self.buildBody()
 
-class Scroll_Box_For_DataBoxColor(ScrollView):
-	"""A ScrollView object which contains a DataBoxColor widget inside
-	DataStructure to be used by the DataBoxCOlor widget is passed in the source keyword"""
-	def __init__(self, **kwargs):
-		self.source = kwargs["source"]
-
-		del kwargs["source"]
-		super(Scroll_Box_For_DataBoxColor, self).__init__(**kwargs)
-
-		self.dataBox = DataBoxColor(source = self.source)
-		self.add_widget(self.dataBox)	
-
-		self.bgColor_1 = (1, 1, 1, 1) #White
-
-		self.instr = InstructionGroup()
-		self.canvas.before.add(self.instr)
-
-	def on_size(self, *args):
-		self.instr.clear()
-
-		self.instr.add(Color(*self.bgColor_1)) 
-		self.instr.add(Rectangle(pos=self.pos, size=self.size))
-
 class VariableBox(BoxLayout):
 	"""Takes a VariableData object as parameter through the source keyword
 		Develops a mirror object to track the label associated with each data item
