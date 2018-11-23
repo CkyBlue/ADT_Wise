@@ -45,7 +45,7 @@ class PseudoCode:
 	def __init__(self):
 		""""A list of strings, each string is a seperate line,	the list is prepared by the extract method
 			One additional 0 index entry is added in the beginning of the statements fetched by extract.
-			This is to indicate invalid attempts to change statement activity
+			This can be used to indicate invalid attempts to change statement activity
 			For eg, if indices go upto 15 statements and someone attempts to change activity
 			for index 17, the change shows for index 0
 			Activity means on or off, active statements are those that
@@ -53,8 +53,6 @@ class PseudoCode:
 
 			The additional 0 index entry also ensures that the line-numbers that show up in text-editors
 			for the pseudocode text which start from 1 match the statement's index here
-
-			Index 0 cannot be made active like the other indices can be since it is an error flag
 
 			Activate means set activity to True for corresponding entry
 			"""
@@ -93,8 +91,7 @@ class PseudoCode:
 			self.statements[0]["activity"] = True
 
 		else:
-			if index != 0: # If index is not 0, only then set is as active
-				self.statements[index]["activity"] = True
+			self.statements[index]["activity"] = True
 
 class CallableActions:
 	"""Stores information relevant to running a particular function
@@ -182,7 +179,7 @@ class CallableActions:
 		# print(promptedValues)
 
 		self.processing = True
-		self.lock = True
+		self.locked = True
 
 		#the dictionary is ** operated to turn dictionary key into key arguments
 		#thus valueName in the Prompts object should match variable names anticipated by function to execute

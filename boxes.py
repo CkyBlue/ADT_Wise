@@ -2,6 +2,8 @@
 Refer to their individual docstrings for more information
 """
 
+###Set PseudoCodeBox up for inheritance and move customized visuals to inheriting custom class
+
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
@@ -91,6 +93,12 @@ class PromptBox(BoxLayout):
 		super(PromptBox, self).__init__(**kwargs)
 		self.clear_widgets()
 		self.orientation = 'vertical'
+
+		# For the purpose of ensuring that the widget works as
+		#  a child of the ScrollView object
+		#  widget's height is binded to and set as the minimum height
+		self.size_hint_y = None
+		self.bind(minimum_height = self.setter('height'))
 
 		self.formArea = BoxLayout()
 		self.msgArea = BoxLayout(size_hint_y=0.5, orientation='vertical')
@@ -184,6 +192,12 @@ class CommandsBox(BoxLayout):
 
 		super(CommandsBox, self).__init__(**kwargs)
 
+		# For the purpose of ensuring that the widget works as
+		#  a child of the ScrollView object
+		#  widget's height is binded to and set as the minimum height
+		self.size_hint_y = None
+		self.bind(minimum_height = self.setter('height'))
+
 		self.orientation = 'vertical'
 
 		self.buildInternal()
@@ -199,14 +213,16 @@ class CommandsBox(BoxLayout):
 		self.target(source.text.lower())
 
 class PseudoCodeBox(BoxLayout):
-	"""###Set it up for inheritance and move customized visuals to inheriting custom class
-
-		This box uses a PseudoCode object for a source, the source is passed through the
+	"""	This box uses a PseudoCode object for a source, the source is passed through the
 		source keyword at initialization. The buildInternal method of this box differs from
 		that of most other boxes in that it was designed to allow resconstruction from a new source.
 		This is so that the same box can display pseudoCode for numerous different actions.
 
-		The PseudoCode object passed is usually provided by a CallableActions object"""
+		The PseudoCode object passed is usually provided by a CallableActions object
+
+		In order to use a different PseudoCode object, set the new one as the source property
+		as run the buildInternal method
+		"""
 	def __init__(self, **kwargs):
 		self.source = kwargs["source"]
 
@@ -230,7 +246,8 @@ class PseudoCodeBox(BoxLayout):
 
 		for statement in self.source.statements:
 
-			l = AltLabel(size_hint_y = None ,height = "40px")
+			l = AltLabel()
+
 			l.text = statement["statement"]
 			l.active = statement["activity"]
 

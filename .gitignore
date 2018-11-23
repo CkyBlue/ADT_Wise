@@ -12,7 +12,6 @@ intmdt_13.py
 intmdt_11.py
 intmdt_12.py
 intmdt_13.py
-intmdt_14.py
 CLI/adt_redesign.py
 adt_wise_gui_test.py
 Color.txt
@@ -20,3 +19,4 @@ bin_03.py
 bin.py
 adt_wise_gui_test.py
 __pycache__
+insertion_sort_test.py

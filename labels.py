@@ -19,10 +19,12 @@ class AltLabel(Label):
 		super(AltLabel, self).__init__(**kwargs)
 
 		self.bold = False
-		self.font_size = 14
+		self.font_size = 18
 
 		self.halign="left"
 		self.valign="middle"
+
+		self.bind(size=self.setter('text_size'))
 
 		self.size_hint=(1.0, None)
 
@@ -46,6 +48,9 @@ class AltLabel(Label):
 	def on_size(self, *args):
 		self.evaluateColor()
 
+	def on_pos(self, *args):
+		self.evaluateColor()
+
 class ColorAwareLabel(Label):
 	"""Uses the default KeyToColor Object and thus the default ColorColleciton object
 		to automatically assign itself a background color depending on its text
@@ -60,11 +65,12 @@ class ColorAwareLabel(Label):
 
 	def __init__(self, **kwargs):
 		self.instr = InstructionGroup()
+		self.colorRef = KeyToColor()
 		super(ColorAwareLabel, self).__init__(**kwargs)
 
-		self.colorRef = KeyToColor()
+		
 		self.bold = False
-		self.font_size = 14
+		self.font_size = 18
 
 		self.colorTuple = self.colorRef.getColor(self.text)
 		self.canvas.before.add(self.instr)
@@ -84,23 +90,29 @@ class ColorAwareLabel(Label):
 
 class HeaderLabel(Label):
 	def __init__(self, **kwargs):
-		super(HeaderLabel, self).__init__(**kwargs)
-
-		# Customizing the visuals
 		self.instr = InstructionGroup()
-		self.canvas.before.add(self.instr)
-
-		self.color = (1, 1, 1, 1) #Font color in the 0 to 1 scale
-
 		self.bgColor_255 = (60,60,60,255) #BG color in the 0 to 255 scale
 
 		#Using map to produce a tuple scale 0 to 1 from a tuple scaled 0 to 255
 		self.bgColor_1 = tuple(list(map(lambda x: round(x/255, 3), self.bgColor_255)))
 
+		super(HeaderLabel, self).__init__(**kwargs)
+
+		# Customizing the visuals
+		
+		self.canvas.before.add(self.instr)
+		self.color = (1, 1, 1, 1) #Font color in the 0 to 1 scale
+
 		self.bold = True
-		self.font_size = 16
+		self.font_size = 20
+
+	def on_pos(self, *args):
+		self.evaluateColor()
 
 	def on_size(self, *args):
+		self.evaluateColor()
+
+	def evaluateColor(self):
 		self.instr.clear()
 
 		self.instr.add(Color(*self.bgColor_1)) #BG
@@ -122,6 +134,7 @@ class ScrollableLabel(ScrollView):
 		self.canvas.before.add(self.instr)
 	
 		self.label = Label(size_hint=(1, None))
+		self.label.font_size = 18
 		self.add_widget(self.label)
 
 		# self.colorTuple = (1,  1, 1, 1)

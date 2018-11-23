@@ -6,15 +6,19 @@ in this customs.py file"""
 
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.textinput import TextInput
 from kivy.uix.label import Label
+from kivy.uix.popup import Popup
+from kivy.uix.button import Button
 
 from kivy.graphics.instructions import InstructionGroup
 from kivy.graphics.context_instructions import Color
 from kivy.graphics.vertex_instructions import Rectangle 
 
-from labels import ColorAwareLabel, HeaderLabel
+from labels import ColorAwareLabel, HeaderLabel, AltLabel, ScrollableLabel
 from data import PointerData, VariableData
-from boxes import DataBox, PseudoCodeBox
+from boxes import DataBox, PseudoCodeBox, CommandsBox, ScrollBox
+from actions import Unfreeze_Action_Button, PseudoCode
 
 class DataBoxColor(DataBox):
 	"""Adds ColorAwareLabel to the DataBox def
@@ -200,3 +204,51 @@ class PointerBox(VariableBox):
 			value = self.source.getValue(key)
 			l = self.mirror.getValue(key)
 			l.text = str(value) 
+
+class CustomCmdBox(CommandsBox):
+	def buildInternal(self):
+		self.spacing = "2px"
+		self.padding = "2px"
+
+		for action in self.actions:
+
+			# Customized Button
+			b = Button(text = action.name.title(), 
+				on_press = self.submitCmd,
+				size_hint_y = None,
+				background_color = (135/255, 206/255, 235/255),
+				height = "45px")
+
+			self.add_widget(b)
+
+class PseudoBoxWithCount(PseudoCodeBox):
+	"""Customized PseudoBox which displays formatted line count starting from 0
+		and customizes display of AltLabel"""
+	def buildInternal(self):
+		self.clear_widgets()
+		self.labels = []
+
+		count = 0
+
+		for statement in self.source.statements:
+
+			#Customizing visuual
+			#markup = True allows [b][/b] to indicate bold line count
+
+			l = AltLabel(size_hint_y = None ,height = "60px")
+			l.font_size = 16
+			l.markup = True
+
+			# If count is < 1000, preceed with 0s to make 3 digit long, eg: 3 -> 003
+			# Make it bold and add spaces around it appropriately 3 -> " 003 "
+			lineCount = " [b]{:0>3}[/b] ".format(count) 
+
+			l.text = lineCount + statement["statement"]
+			l.active = statement["activity"]
+
+			self.labels.append(l)	
+			self.add_widget(l)
+
+			count += 1
+
+

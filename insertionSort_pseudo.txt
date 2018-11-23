@@ -1,0 +1,9 @@
+FOR Index <- 1 TO Number_Of_Items
+        Items_To_Be_Inserted <- List_To_Be_Sorted[Index]
+        Pointer_To_Current_Item <- Index - 1
+        WHILE ( List_To_Be_Sorted[ Pointer_To_Current_Item ] ) > Items_To_Be_Inserted) AND (Pointer_To_Current_Item >= 0)
+                List_To_Be_Sorted[ Pointer_To_Current_Item + 1 ] <- List_To_Be_Sorted[ Pointer_To_Current_Item ]
+                Pointer_To_Current_Item <- Pointer_To_Current_Item - 1
+        ENDWHILE
+        List_To_Be_Sorted[ Pointer_To_Current_Item ] <- itemToBeInserted
+ENDFOR
