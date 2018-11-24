@@ -1,4 +1,4 @@
-Video introduction to the project at work: ''
+Link to introduction to project on YouTube: 'https://youtu.be/ThwKE4wxkCo'
 
 The framework being worked here is meant to allow easily breaking down a complex algorithm such as an ADT operation
 like 'insert into Queue' and let you see how the data changes as the method moves to completion.
@@ -6,6 +6,8 @@ like 'insert into Queue' and let you see how the data changes as the method move
 See it in action for the insertion sort algorithm:
 
 ![Screenshot](GUI3.gif)
+
+Here's what the code implementation of an algorithm explainer might look like.
 
 -----------------------
 log("Explanation text") 
@@ -16,6 +18,7 @@ light([1,2,3]) """Highlight lines 1,2 & 3 in the pseudocode"""
 """Perform some action in program code, eg: self.dataStructure.setValue("Item", 0, "Ram")"""
 
 lock() """Freeze the function at this point and update visuals, once user gives the go, unfreeze the function and continue"""
+
 -----------------------
 
 See insertion_sort.py to see all the code relevant to implementing it
@@ -28,10 +31,15 @@ Notice how the color-coding allow linking Pointers and Index makes keeping up wi
 ![Screenshot](GUI.gif)
 
 Setting up an algorithm explainer will (hopefully) be made fairly simple with the framework once it's completed
-and cleaned. That was the whole point, making it easier for people who know stuff about algorithms to share what they know.
+and cleaned.Hopefully that'll mean that I'll be able to get some peers on board for making algorithm explainers for other difficult algorithms.
 
 Freezing the code works by temporarily setting up a slowly looping infinite loop, the whole function runs on its own thread
-seperate from the one on which the rest of the program is running so the rest of the program does not freeze
+seperate from the one on which the rest of the program is running so the rest of the program does not freeze.
+
+In order to modify the data items such that it shows on the GUI, objects within data.py are used. Widgets associated with variables,
+data and pointers are tied to these data objects and by modifying the data tracked by these objects (e.g: self.dataStructure.setValue("Item", 0, "Ram")) the data displayed by the widgets can be altered.
+
+These data objects are defined as properties of classes inheriting from the Operations class. The doUpdate and buildInternal methods of the Controller class are defined keeping in mind the Operations class used as a source for the controller. See controller.CustomController and insertion_sort.SortOp to see how the Operations and Controller class interact.
 
 Question 6 at "https://papers.gceguide.com/A%20Levels/Computer%20Science%20(for%20final%20examination%20in%202021)%20(9608)/9608_s15_qp_41.pdf" 
 should give you an idea of what kind of CS questions it's supposed to be helpful for.
