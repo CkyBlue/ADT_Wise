@@ -16,6 +16,7 @@ light([1,2,3]) """Highlight lines 1,2 & 3 in the pseudocode"""
 """Perform some action in program code, eg: self.dataStructure.setValue("Item", 0, "Ram")"""
 
 lock() """Freeze the function at this point and update visuals, once user gives the go, unfreeze the function and continue"""
+
 -----------------------
 
 See insertion_sort.py to see all the code relevant to implementing it
