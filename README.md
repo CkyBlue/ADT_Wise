@@ -7,6 +7,8 @@ See it in action for the insertion sort algorithm:
 
 ![Screenshot](GUI3.gif)
 
+Here's what the code implementation of an algorithm explainer might look like.
+
 -----------------------
 log("Explanation text") 
 log("Some more explanation text")
