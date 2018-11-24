@@ -1,3 +1,5 @@
+Video introduction to the project at work: ''
+
 The framework being worked here is meant to allow easily breaking down a complex algorithm such as an ADT operation
 like 'insert into Queue' and let you see how the data changes as the method moves to completion.
 
