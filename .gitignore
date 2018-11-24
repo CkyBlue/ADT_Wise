@@ -9,6 +9,9 @@ intmdt_08.py
 intmdt_09.py
 intmdt_12.py
 intmdt_13.py
+queue_00.py
+adt.py
+adt_wise_gui.py
 intmdt_11.py
 intmdt_12.py
 intmdt_13.py
@@ -17,6 +20,5 @@ adt_wise_gui_test.py
 Color.txt
 bin_03.py
 bin.py
-adt_wise_gui_test.py
 __pycache__
 insertion_sort_test.py
