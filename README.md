@@ -11,6 +11,7 @@ Here's what the code implementation of an algorithm explainer might look like.
 
 -----------------------
 log("Explanation text") 
+
 log("Some more explanation text")
 
 light([1,2,3]) """Highlight lines 1,2 & 3 in the pseudocode"""
