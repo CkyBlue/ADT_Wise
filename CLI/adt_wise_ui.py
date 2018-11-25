@@ -24,6 +24,15 @@ def clear():
 
 
 
+def parse(logTexts):
+	"""Takes a list and gives a string where the items are indivisual statements,"""
+	logString = ""
+
+	for statement in logTexts:
+		logString += statement + "\n"
+
+	return logString
+
 def getADTTypeFromObjName(adtName):
 	return logic.getADTTypeFromName(adtName)
 
@@ -505,7 +514,7 @@ class adt_wise_ui(Cmd):
 			typeOfADT = typeOfADT.lower().strip()
 
 			# Create and Load 
-			adtClass = logic.soi(typeOfADT)
+			adtClass = logic.getADTClassFromCallName(typeOfADT)
 			objToUse = adtClass("Micro", self.nodeCount)
 			ADTObjectHandler(objToUse).internalLoop()
 
