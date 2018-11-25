@@ -52,10 +52,12 @@ class HashTable(adt.ADT):
 	def __doc__(self):
 
 		text = ["A hash table is an abstract data type",
+		"In this particular implementation",
+		"the hash function returns the remainder when id is divided by 10",
 		"Add more elaboration later..."
 		]
 
-		return super().__doc__(text)
+		return super().__doc__(*text)
 
 	def isSearchIdValid(self, id):
 		if not id.isdigit():

@@ -8,7 +8,7 @@ class LinkedList(adt.ADT):
 		"Add more elaboration later..."
 		]
 
-		return super().__doc__(text)
+		return super().__doc__(*text)
 
 	def getFreePointer(self):
 		return self.freePointer
