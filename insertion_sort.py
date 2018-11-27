@@ -12,6 +12,7 @@ from actions import Null, CallableActions, Prompts, PseudoCode, Unfreeze_Action_
 from controller import CustomController
 from customs import DataBoxColor, PointerBox, VariableBox, CustomCmdBox, PseudoBoxWithCount
 from boxes import PromptBox, CommandsBox, ScrollBox
+from pathfinder import resource_path
 
 from kivy.lang import Builder
 
@@ -229,7 +230,7 @@ class SortOp(Operations):
 			self.data.setValue("List Item", i, chr(ord('z') - i * 2))
 
 	def insertion_Sort_PseudoCode(self):
-		f = open("insertionSort_pseudo.txt", "r")
+		f = open(resource_path("insertionSort_pseudo.txt"), "r")
 		# print(f.read().split("\n"))
 		p = PseudoCode()
 		p.extract(f.read())
