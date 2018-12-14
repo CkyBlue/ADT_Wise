@@ -1,6 +1,6 @@
 Link to introduction to project on YouTube: 'https://youtu.be/ThwKE4wxkCo'
 
-Link to an executable (that should hopefully work) for Windows 64-bit: 'https://drive.google.com/open?id=17QmOIxYPm57fvy2MuyIBAwE9zY22_Qr-'
+Link to an executable (that should hopefully work) for 64-bit Windows: 'https://drive.google.com/open?id=17QmOIxYPm57fvy2MuyIBAwE9zY22_Qr-'
 
 The framework being worked here is meant to allow easily breaking down a complex algorithm such as an ADT operation
 like 'insert into Queue' and let you see how the data changes as the method moves to completion.
@@ -29,12 +29,9 @@ See insertion_sort.py to see all the code relevant to implementing it
 The GUI relies on the Kivy framework.
 The framework I implemented to freeze algorithms and control their behavior is iimplemented much differently here than in the CLI version preceeding it (see below)
 
-Notice how the color-coding allow linking Pointers and Index makes keeping up with linked-lists easier.
+Notice how the color-coding allows linking Pointers and Index, making it easier to keep up with linked-lists.
 
 ![Screenshot](GUI.gif)
-
-Setting up an algorithm explainer will (hopefully) be made fairly simple with the framework once it's completed
-and cleaned.Hopefully that'll mean that I'll be able to get some peers on board for making algorithm explainers for other difficult algorithms.
 
 Freezing the code works by temporarily setting up a slowly looping infinite loop, the whole function runs on its own thread
 seperate from the one on which the rest of the program is running so the rest of the program does not freeze.
