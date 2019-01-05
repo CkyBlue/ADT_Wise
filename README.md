@@ -3,7 +3,7 @@ Link to introduction to project on YouTube: https://youtu.be/ThwKE4wxkCo
 Link to an executable (that should hopefully work) for 64-bit Windows: https://drive.google.com/open?id=17QmOIxYPm57fvy2MuyIBAwE9zY22_Qr-
 
 The framework being worked here is meant to allow extending algorithms written as normal programs to control the walk-through produced in the application. The function containing the algorithm's code is passed as an argument to a class which runs the function on a
-new thread so that the program execution can be frozen. This is achieved through a slowly-looping infinite loop which terminates only when a signal is received telling the program that the program execution should crawl forward. This allows the program to be run bit by bit. Other functions passed as arguments to the algorithm's function control display elements and the freezing. Special data object are used instead of or together with program variables as changes to these data objects reflect in the GUI.
+new thread so that the program execution can be frozen. This is achieved through a slowly-looping infinite loop which terminates only when a signal is received telling the program that the program execution should crawl forward. (There probably is a better alternative that I don't know of yet) This allows the program to be run bit by bit. Other functions passed as arguments to the algorithm's function control display elements and the freezing. Special data object are used instead of or together with program variables as changes to these data objects reflect in the GUI.
 
 See it in action for the insertion sort algorithm:
 
