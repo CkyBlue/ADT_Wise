@@ -1,4 +1,12 @@
-Link to introduction to project on YouTube: https://youtu.be/ThwKE4wxkCo
+What I'm trying to do with this project is produce applications that can walk learners through the working of difficult-to-understand algorithms. Currently I've worked with the best of my knowledge of Kivy to put together a GUI and a framework with which I, and possibly my friends in the future, can dp that easily. I'll probably try to get an android app up eventually (probably through traditional android development itself which I'm currently learning instead of Kivy). Till then, I'll probably be working on creating desktop applications that can explain important A-Level CS algorithms.
+  
+  I'll probably put up a link to or a folder for an entirely CLI based version of my working environment soon because I know setting up Kivy is a bit up of a pain in my experience and I want to make it less of a headache to collaborate for my friends.
+  
+  I'm going to try to explain the project a bit more in detail below but I apologize in advance if clarity is lacking. A hobbyist ametuer here. I'm expecting  that I'll probably be walking through all of it in person for those I eventually might collaborate with.
+  
+Anywho
+
+Link to video introduction to project on YouTube: https://youtu.be/ThwKE4wxkCo
 
 Link to an executable (that should hopefully work) for 64-bit Windows: https://drive.google.com/open?id=17QmOIxYPm57fvy2MuyIBAwE9zY22_Qr-
 
