@@ -1,9 +1,17 @@
-Link to introduction to project on YouTube: 'https://youtu.be/ThwKE4wxkCo'
+What I'm trying to do with this project is basically produce applications that can walk learners through the working of difficult-to-understand algorithms. Currently I've worked with the best of my knowledge of Kivy to put together a GUI and a framework with which I, and possibly my friends in the future, can dp that easily. I'll probably try to get an android app up eventually (probably through traditional android development itself which I'm currently learning instead of Kivy). Till then, I'll probably be working on creating desktop applications that can explain important A-Level CS algorithms.
+  
+  I'll probably put up a link to or a folder for an entirely CLI based version of my working environment soon because I know setting up Kivy is a bit up of a pain in my experience and I want to make it less of a headache to collaborate for my friends.
+  
+  I'm going to try to explain the project a bit more in detail below but I apologize in advance if clarity is lacking. A hobbyist ametuer here. I'm expecting  that I'll probably be walking through all of it in person for those I eventually might collaborate with.
+  
+Anywho
 
-Link to an executable (that should hopefully work) for Windows 64-bit: 'https://drive.google.com/open?id=17QmOIxYPm57fvy2MuyIBAwE9zY22_Qr-'
+Link to video introduction to project on YouTube: https://youtu.be/ThwKE4wxkCo
 
-The framework being worked here is meant to allow easily breaking down a complex algorithm such as an ADT operation
-like 'insert into Queue' and let you see how the data changes as the method moves to completion.
+Link to an executable (that should hopefully work) for 64-bit Windows: https://drive.google.com/open?id=17QmOIxYPm57fvy2MuyIBAwE9zY22_Qr-
+
+The framework being worked here is meant to allow extending algorithms written as normal programs to control the walk-through produced in the application. The function containing the algorithm's code is passed as an argument to a class which runs the function on a
+new thread so that the program execution can be frozen. This is achieved through a slowly-looping infinite loop which terminates only when a signal is received telling the program that the program execution should crawl forward. (There probably is a better alternative that I don't know of yet) This allows the program to be run bit by bit. Other functions passed as arguments to the algorithm's function control display elements and the freezing. Special data object are used instead of or together with program variables as changes to these data objects reflect in the GUI.
 
 See it in action for the insertion sort algorithm:
 
@@ -33,12 +41,9 @@ See insertion_sort.py to see all the code relevant to implementing it
 The GUI relies on the Kivy framework.
 The framework I implemented to freeze algorithms and control their behavior is iimplemented much differently here than in the CLI version preceeding it (see below)
 
-Notice how the color-coding allow linking Pointers and Index makes keeping up with linked-lists easier.
+Notice how the color-coding allows linking Pointers and Index, making it easier to keep up with linked-lists.
 
 ![Screenshot](GUI.gif)
-
-Setting up an algorithm explainer will (hopefully) be made fairly simple with the framework once it's completed
-and cleaned.Hopefully that'll mean that I'll be able to get some peers on board for making algorithm explainers for other difficult algorithms.
 
 Freezing the code works by temporarily setting up a slowly looping infinite loop, the whole function runs on its own thread
 seperate from the one on which the rest of the program is running so the rest of the program does not freeze.
