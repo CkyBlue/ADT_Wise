@@ -1,0 +1,10 @@
+A <- 0
+B <- 1
+Limit <- 10
+OUTPUT A, B
+FOR I <- 1 TO Limit - 2
+	C <- A + B
+	OUTPUT C
+	A <- B
+	B <- C
+ENDFOR
