@@ -40,9 +40,11 @@ class Operations:
 		so that the object reference self if passed automatically and the method can interact with
 		the Operations objects data structure without additional adt parameters
 
+		Use getActions to get a list of all actions associated with the class
+
 		Refer to the '##' commented out code in the init to see how polymorphism should be implemented
 	
-		Overwrite init to read a source
+		Overwrite init for your custom Operations classes
 	"""
 		
 	def __init__(self, 
@@ -87,11 +89,21 @@ class Operations:
 		## self.data = DataStructure([...])
 		## self.pointers = PointerData([...])
 
+		# By default, setting them to none so that the Controller can read them without throwing
+		# an exception
+
+		self.data = None
+		self.pointers = None
+		self.variables = None
+
 	# The following is a function that is prepared to be passed into the above insert CallableActions 
 	# object, The null is there just in case the keyword parameter is not passed
 	# Intended to integrate an additional a pseudocode log easily if need arises
 	# and allow using 
 	# log and lock are passed in my the CallableActions object that controls this function
+
+	def getActions(self):
+		return self.actions
 
 	##  def dummyInsert(self, itemToBeInserted, log = Null, lock = Nul, light = Null):
 		##  log("Explanation text")

@@ -1,26 +1,79 @@
-"""Create a dummy actions class in which the lock function is overwritten to demand an input
-Create a dummy controller with logCallBack and actionEndTarget functions to feed into operations
+"""Create a CLI_ actions class in which the lock function is overwritten to demand an input
+Create a CLI_ controller with logCallBack and actionEndTarget functions to feed into operations
 Use these dummies to place the sorting algorithm
 
-Set up a CLI visuals system
+Set up a CLI_ visuals system
 """
 
 from operations import Operations
 from data import DataStructure, VariableData, PointerData
 from actions import Null, CallableActions, Prompts, PseudoCode
+from pathfinder import resource_path
 
-class DummyActions(CallableActions):
+class CLI_Actions(CallableActions):
 	def lock(self):
 		self.lockCallBack(self.logTexts)
 		self.logTexts = []
 
 		input("Press Enter to continue...")
 
-
-class DummyController:
+class CLI_Controller:
 	def __init__(self, source):
 		self.source = source(lockCallBack = self.lockCallBack, 
 			actionEndTarget = self.endTarget)
+
+		self.displays = []
+		self.configureDisplay()
+
+		self.pseudoCode = self.source.insertion_Sort_PseudoCode()
+
+		self.pseudoCode.highlight([1, 2, 4])
+
+	def configureDisplay(self):
+		# Reads source to find if data table (data property), variable table (variables property)
+		# and pointer table (pointers property) exist
+
+		source = self.source
+
+		# Each item at dataObjs is associated with an item at allDisplays with the same index pos
+		dataObjs = [source.data, source.variables, source.pointers]
+		allDisplays = [self.displayDataTable, self.displayVariables, self.displayPointers]
+
+		# If anyone one of the attributes in the dataObjs list are not defined in the source class
+		# They will take the None value assigned at the base Operations class
+		for index in range(len(dataObjs)):
+			dataObj = dataObjs[index]
+
+			# If a particular data object is defined (not None), register the function used to
+			#  display it as one of those to be used by display()
+			if dataObj != None:
+				self.displays.append(allDisplays[index])
+
+	def display(self):
+		for displayFunc in self.displays:
+			displayFunc()
+
+		self.displayAvailableActions()
+
+		self.displayPseudoCode()
+
+	def displayPseudoCode(self):
+		pseudo = self.pseudoCode
+		for i in range(pseudo.length):
+			activity = pseudo.statements[i]["activity"]
+			statement = pseudo.statements[i]["statement"]
+
+			lineCount = "{:0>3}".format(i) 
+
+			prefix = suffix = ""
+
+			if activity:
+				prefix = "*"
+				suffix = ""
+
+			representation = "{p:^3} {lc} {st} {s}".format(p = prefix, lc = lineCount, st = statement,	s = suffix)
+
+			print(representation)
 
 	def displayDataTable(self):
 		padding = 12
@@ -42,7 +95,7 @@ class DummyController:
 		print(demarc)
 
 	def displayVariables(self):
-		padding = 20
+		padding = 30
 
 		variableNames = list(self.source.variables.data.keys())
 		
@@ -58,7 +111,7 @@ class DummyController:
 		print(demarc)
 
 	def displayPointers(self):
-		padding = 20
+		padding = 30
 
 		pointerNames = list(self.source.pointers.data.keys())
 		
@@ -69,7 +122,7 @@ class DummyController:
 
 		for pointer in pointerNames:
 			item = self.source.pointers.getValue(pointer)
-			print(self.getFormattedRow([pointer, item], padding)) 
+			print(self.getFormattedRow([pointer + " Pointer", item], padding)) 
 
 		print(demarc)
 
@@ -91,24 +144,41 @@ class DummyController:
 
 		return placeholder.format(*items)
 
+	def displayAvailableActions(self):
+		padding = 30
+		
+		itemsdisplay = self.getFormattedRow(["Available Operations"], padding)
+		demarc = "-" * len(itemsdisplay)
+
+		print(demarc + "\n" + itemsdisplay + "\n" + demarc)
+
+		for action in self.source.getActions():
+			item = action.name.title()
+			print(self.getFormattedRow([item], padding)) 
+
+		print(demarc)
+
+	def loop(self):
+		pass
+
 	def lockCallBack(self, logTexts):
 		print(logTexts)
 
 	def endTarget(self):
 		print("Operation ended.")
 
-class DummyOp(Operations):
+class CLI_Op(Operations):
 	def __init__(self, **kwargs):
-		super(DummyOp, self).__init__(**kwargs)
+		super(CLI_Op, self).__init__(**kwargs)
 		
 		self.variables = VariableData(["Index", "Number of items", "Item to be inserted", "Pointer to current item"])
 		self.data = DataStructure(["List Index", "List Item"], name = "List", size = 5)
 
-		sort = DummyActions(name = 'insertion sort', 
+		sort = CLI_Actions(name = 'insertion sort', 
 			functionToExecute = self.insertionSort, 
 			lockCallBack = self.lockCallBack,
 			endTarget = self.endTarget,
-			codeObj = PseudoCode())
+			codeObj = self.insertion_Sort_PseudoCode())
 
 		self.addAction(sort)
 		self.initializeData()
@@ -320,6 +390,11 @@ class DummyOp(Operations):
 
 		print(X)
 
-c = DummyController(source = DummyOp)
-c.displayDataTable()
-c.displayVariables()
+	def insertion_Sort_PseudoCode(self):
+		f = open(resource_path("insertionSort_pseudo.txt"), "r")
+		p = PseudoCode()
+		p.extract(f.read())
+		return p 
+
+c = CLI_Controller(source = CLI_Op)
+c.display()
