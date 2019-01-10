@@ -26,11 +26,15 @@ log("Some more explanation text")
 
 light([1,2,3]) """Highlight lines 1,2 & 3 in the pseudocode"""
 
-"""Perform some action in program code, eg: self.dataStructure.setValue("Item", 0, "Ram")"""
+"""Perform some action in program code, eg: self.data.setValue("Item", 0, "Ram")"""
 
 lock() """Freeze the function at this point and update visuals, once user gives the go, unfreeze the function and continue"""
 
 -----------------------
+
+In order to modify the data items such that the change shows on the GUI, classes within data.py are used. 
+Widgets associated with displaying variables, data and pointers are tied to these data objects and by modifying the data tracked by 
+these objects (e.g: self.data.setValue("Item", 0, "Ram")) the data displayed by the widgets can be altered.
 
 See insertion_sort.py to see all the code relevant to implementing it
 
@@ -43,9 +47,6 @@ Notice how the color-coding allows linking Pointers and Index, making it easier 
 
 Freezing the code works by temporarily setting up a slowly looping infinite loop, the whole function runs on its own thread
 seperate from the one on which the rest of the program is running so the rest of the program does not freeze.
-
-In order to modify the data items such that it shows on the GUI, objects within data.py are used. Widgets associated with variables,
-data and pointers are tied to these data objects and by modifying the data tracked by these objects (e.g: self.dataStructure.setValue("Item", 0, "Ram")) the data displayed by the widgets can be altered.
 
 These data objects are defined as properties of classes inheriting from the Operations class. The doUpdate and buildInternal methods of the Controller class are defined keeping in mind the Operations class used as a source for the controller. See controller.CustomController and insertion_sort.SortOp to see how the Operations and Controller class interact.
 
