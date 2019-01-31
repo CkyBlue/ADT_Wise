@@ -1,0 +1,18 @@
+INPUT Item_To_Be_Searched
+IF Head_pointer = -1 THEN
+		OUTPUT "Error: The Queue is empty."
+ELSE
+		Current_Pointer <- Head_pointer
+		Item_Found <- False
+		WHILE Current_Pointer <> -1 AND NOT Item_Found
+				IF Node_Array[Current_Pointer].Item = Item_To_Be_Searched THEN
+						Item_Found <- True
+				ELSE 
+						CurrentPointer <- Node_Array[Current_Pointer].Pointer
+				ENDIF
+				IF NOT Item_Found THEN
+						OUTPUT "No matching item was found."
+				ELSE
+						OUTPUT "Matching item was found at index " + TO_STRING(Current_Pointer)
+				ENDIF
+ENDIF

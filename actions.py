@@ -1,5 +1,4 @@
 import threading, time
-from kivy.uix.button import Button
 
 """The Prompts, CallableActions and Unfreeze_Action_Button objects
 are used to control the function to be frozen.
@@ -190,36 +189,3 @@ class CallableActions:
 
 		t.start()
 
-class Unfreeze_Action_Button(Button):
-	"""Used with a CallableActions object,
-		The function frozen using CallableActions periodically checks a lock Boolean
-		CallableActions class's unlock method sets the Boolean 
-		such that the frozen function can continue executing
-		Initializes with a CallableActions object reference passed through the action keyword
-	"""
-	def __init__(self, **kwargs):
-		self.action = kwargs["action"]
-		del kwargs["action"]
-
-		self.endTarget = [kwargs["endTarget"]]
-		del kwargs["endTarget"]
-
-		super(Unfreeze_Action_Button, self).__init__(**kwargs)
-
-		self.text = "Next"
-		self.bold = True
-
-		self.finished = False
-
-	def on_press(self, *args):
-		if self.action.processing == True and not self.finished:
-			self.action.unlock()
-		else:
-			self.parent.remove_widget(self)
-			self.endTarget[0]()
-
-	def finish(self):
-		self.action.unlock()
-		self.finished = True
-
-		self.text = "Finish"

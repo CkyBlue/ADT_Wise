@@ -1,0 +1,14 @@
+IF Head_Pointer = -1 THEN
+		OUTPUT "Error: The Queue is empty."
+ELSE
+		Current_Pointer <- Head_Pointer
+		Output_From_Queue <- Node_Array[Current_Pointer].Item
+		Node_Array[Current_Pointer].Item <- ""
+		Head_Pointer <- Node_Array[Current_Pointer].Pointer
+		Node_Array[Current_Pointer].Pointer <- Free_Pointer
+		Free_Pointer <- Current_Pointer
+		IF Current_Pointer <- Tail_Pointer THEN
+				Tail_Pointer <- -1
+		ENDIF
+		OUTPUT Output_From_Queue
+ENDIF

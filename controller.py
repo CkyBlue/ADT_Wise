@@ -1,3 +1,6 @@
+### Allow controller to recognize if a data object is missing or present
+### Consider using a re-construction based variable box display widget
+
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
@@ -6,9 +9,9 @@ from kivy.uix.popup import Popup
 
 from boxes import PromptBox, CommandsBox, PseudoCodeBox, ScrollBox
 from labels import ScrollableLabel, HeaderLabel
-from customs import DataBoxColor, PointerBox, VariableBox, CustomCmdBox, PseudoBoxWithCount
+from customs import DataBoxColor, PointerBox, VariableBox, CustomCmdBox, PseudoBoxWithCount, Unfreeze_Action_Button
 from boxes import PromptBox, CommandsBox, ScrollBox
-from actions import Unfreeze_Action_Button, PseudoCode
+from actions import PseudoCode
 
 class Controller(BoxLayout):
 	"""The controller relies on an Operations class based class 

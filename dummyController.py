@@ -16,80 +16,14 @@ class DummyActions(CallableActions):
 
 		input("Press Enter to continue...")
 
-
 class DummyController:
 	def __init__(self, source):
 		self.source = source(lockCallBack = self.lockCallBack, 
 			actionEndTarget = self.endTarget)
 
 	def displayDataTable(self):
-		padding = 12
-
-		itemNames = list(self.source.data.data.keys())
-		
-		itemNamesdisplay = self.getFormattedRow(itemNames, padding)
-		demarc = "-" * len(itemNamesdisplay)
-
-		print(demarc + "\n" + itemNamesdisplay + "\n" + demarc)
-
-		for index in range(self.source.data.size):
-			items = []
-			for item in itemNames:
-				items += self.source.data.getValue(item, index)
-
-			print(self.getFormattedRow(items, padding)) 
-
-		print(demarc)
-
-	def displayVariables(self):
-		padding = 20
-
-		variableNames = list(self.source.variables.data.keys())
-		
-		itemsdisplay = self.getFormattedRow(["Variables", "Value"], padding)
-		demarc = "-" * len(itemsdisplay)
-
-		print(demarc + "\n" + itemsdisplay + "\n" + demarc)
-
-		for variable in variableNames:
-			item = self.source.variables.getValue(variable)
-			print(self.getFormattedRow([variable, item], padding)) 
-
-		print(demarc)
-
-	def displayPointers(self):
-		padding = 20
-
-		pointerNames = list(self.source.pointers.data.keys())
-		
-		itemsdisplay = self.getFormattedRow(["Pointers", "Value"], padding)
-		demarc = "-" * len(itemsdisplay)
-
-		print(demarc + "\n" + itemsdisplay + "\n" + demarc)
-
-		for pointer in pointerNames:
-			item = self.source.pointers.getValue(pointer)
-			print(self.getFormattedRow([pointer, item], padding)) 
-
-		print(demarc)
-
-	def getFormattedRow(self, items, padding):
-		"""Takes in a list (items) and an integer (padding)
-
-		for list ['Item', 'Val', 'Ptr'] and padding of 4,
-		returns the string '|Item| Val| Ptr|'
-
-		The gap between '|'s contains <padding> no. of characters (w/ spaces for padding)
-		If string in list is too long, the first <padding> no. of characters show up
-		"""
-
-		items = list(map(lambda x: str(x)[:padding], items))
-		placeholder = "|"
-
-		for i in range(len(items)):
-			placeholder += "{:^" + str(padding) + "}|"
-
-		return placeholder.format(*items)
+		for item in list(self.source.data.data.keys()):
+			print(item)
 
 	def lockCallBack(self, logTexts):
 		print(logTexts)
@@ -101,7 +35,8 @@ class DummyOp(Operations):
 	def __init__(self, **kwargs):
 		super(DummyOp, self).__init__(**kwargs)
 		
-		self.variables = VariableData(["Index", "Number of items", "Item to be inserted", "Pointer to current item"])
+		self.pointers = PointerData(["Current Item"])
+		self.variables = VariableData(["Index", "Number of items", "Item to be inserted"])
 		self.data = DataStructure(["List Index", "List Item"], name = "List", size = 5)
 
 		sort = DummyActions(name = 'insertion sort', 
@@ -322,4 +257,3 @@ class DummyOp(Operations):
 
 c = DummyController(source = DummyOp)
 c.displayDataTable()
-c.displayVariables()

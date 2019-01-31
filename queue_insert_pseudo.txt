@@ -1,0 +1,16 @@
+INPUT New_Item
+IF Free_Pointer = -1 THEN
+		OUTPUT "Error: The Queue has no free nodes."
+ELSE
+		Current_Pointer <- Free_Pointer
+		Node_Array[Current_Pointer].Item <- New_Item
+		Free_Pointer <- Node_Array[Current_Pointer].Pointer
+		IF Tail_Pointer <> -1 THEN
+				Node_Array[Tail_Pointer].Pointer <- Current_Pointer
+		ENDIF
+		Node_Array[Current_Pointer].Pointer <- -1
+		Tail_Pointer <- Current_Pointer		
+		IF Head_Pointer = -1 THEN 
+				Head_Pointer <- Current_Pointer
+		ENDIF
+ENDIF

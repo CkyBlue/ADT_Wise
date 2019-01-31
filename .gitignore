@@ -2,9 +2,7 @@ intmdt
 queue_00.py
 ./adt.py
 adt_wise_gui.py
-intmdt_11.py
-intmdt_12.py
-intmdt_13.py
+bin
 CLI/adt_redesign.py
 adt_wise_gui_test.py
 Color.txt

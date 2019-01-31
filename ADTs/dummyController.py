@@ -1,36 +1,49 @@
-"""See controller.Controller and operations.Operations for info on how to use them"""
+"""Create a dummy actions class in which the lock function is overwritten to demand an input
+Create a dummy controller with logCallBack and actionEndTarget functions to feed into operations
+Use these dummies to place the sorting algorithm
 
-### Create a 'Click and drag to scroll...' msg
-
-from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout
+Set up a CLI visuals system
+"""
 
 from operations import Operations
-from labels import ScrollableLabel, HeaderLabel
 from data import DataStructure, VariableData, PointerData
 from actions import Null, CallableActions, Prompts, PseudoCode
-from controller import CustomController
-from customs import DataBoxColor, PointerBox, VariableBox, CustomCmdBox, PseudoBoxWithCount
-from boxes import PromptBox, CommandsBox, ScrollBox
-from pathfinder import resource_path
 
-from kivy.lang import Builder
+class DummyActions(CallableActions):
+	def lock(self):
+		self.lockCallBack(self.logTexts)
+		self.logTexts = []
 
-# Where the commands like 'Insertion Sort' and necessary properties are defined
-# if no need change anything about the GUI this is all you need to customize
-class SortOp(Operations):
+		input("Press Enter to continue...")
+
+class DummyController:
+	def __init__(self, source):
+		self.source = source(lockCallBack = self.lockCallBack, 
+			actionEndTarget = self.endTarget)
+
+	def displayDataTable(self):
+		for item in list(self.source.data.data.keys()):
+			print(item)
+
+	def lockCallBack(self, logTexts):
+		print(logTexts)
+
+	def endTarget(self):
+		print("Operation ended.")
+
+class DummyOp(Operations):
 	def __init__(self, **kwargs):
-		super(SortOp, self).__init__(**kwargs)
+		super(DummyOp, self).__init__(**kwargs)
 		
 		self.pointers = PointerData(["Current Item"])
 		self.variables = VariableData(["Index", "Number of items", "Item to be inserted"])
 		self.data = DataStructure(["List Index", "List Item"], name = "List", size = 5)
 
-		sort = CallableActions(name = 'insertion sort', 
+		sort = DummyActions(name = 'insertion sort', 
 			functionToExecute = self.insertionSort, 
 			lockCallBack = self.lockCallBack,
 			endTarget = self.endTarget,
-			codeObj = self.insertion_Sort_PseudoCode())
+			codeObj = PseudoCode())
 
 		self.addAction(sort)
 		self.initializeData()
@@ -229,18 +242,18 @@ class SortOp(Operations):
 			self.data.setValue("List Index", i, str(i))
 			self.data.setValue("List Item", i, chr(ord('z') - i * 2))
 
-	def insertion_Sort_PseudoCode(self):
-		f = open(resource_path("insertionSort_pseudo.txt"), "r")
-		# print(f.read().split("\n"))
-		p = PseudoCode()
-		p.extract(f.read())
-		return p
+	def binarySort(self):
+		X = [chr(ord('Z')-i) for i in range(10)]
+		numberOfItems = len(X)
 
-# The GUI Controller which uses the SortOp class as source
-c = CustomController(source = SortOp)
+		for i in range(numberOfItems - 2):
+			for j in range(numberOfItems - 2 - i):
+				if X[j] > X[j + 1]:
+					item = X[j]
+					X[j] = X[j + 1]
+					X[j + 1] = Item
 
-class anApp(App):
-	def build(self):
-		return c #Returning instance of controller object c
+		print(X)
 
-anApp().run()
+c = DummyController(source = DummyOp)
+c.displayDataTable()
