@@ -276,7 +276,7 @@ class Unfreeze_Action_Button(Button):
 		if self.action.processing == True and not self.finished:
 			self.action.unlock()
 		else:
-			self.parent.remove_widget(self)
+			# self.parent.remove_widget(self)
 			self.endTarget[0]()
 
 	def finish(self):
@@ -285,3 +285,20 @@ class Unfreeze_Action_Button(Button):
 
 		self.text = "Finish"
 
+class Skip_Through_Action_Button(Button):
+	def __init__(self, **kwargs):
+		self.action = kwargs["action"]
+		del kwargs["action"]
+
+		self.endTarget = [kwargs["endTarget"]]
+		del kwargs["endTarget"]
+
+		super(Skip_Through_Action_Button, self).__init__(**kwargs)
+
+		self.text = "Skip"
+		self.bold = True
+
+	def on_press(self, *args):
+		self.action.skipOver()
+		# self.parent.remove_widget(self)
+		self.endTarget[0]()

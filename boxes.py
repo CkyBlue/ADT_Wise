@@ -241,6 +241,10 @@ class CommandsBox(BoxLayout):
 			b = Button(text = action.name.title(), on_press = self.submitCmd)
 			self.add_widget(b)
 
+	def updateContent(self):
+		self.clear_widgets()
+		self.buildInternal()
+
 	def submitCmd(self, source):
 		"""Function which sends the target function the name of the relevant CallableActions object
 		after fetching the title cased version from the buttons text and turning it to lowercase"""

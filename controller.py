@@ -1,3 +1,4 @@
+
 ### Allow controller to recognize if a data object is missing or present
 ### Consider using a re-construction based variable box display widget
 
@@ -9,7 +10,7 @@ from kivy.uix.popup import Popup
 
 from boxes import PromptBox, CommandsBox, PseudoCodeBox, ScrollBox
 from labels import ScrollableLabel, HeaderLabel
-from customs import DataBoxColor, PointerBox, VariableBox, CustomCmdBox, PseudoBoxWithCount, Unfreeze_Action_Button
+from customs import DataBoxColor, PointerBox, VariableBox, CustomCmdBox, PseudoBoxWithCount, Unfreeze_Action_Button, Skip_Through_Action_Button
 from boxes import PromptBox, CommandsBox, ScrollBox
 from actions import PseudoCode
 
@@ -46,6 +47,7 @@ class Controller(BoxLayout):
 
 		self.promptPopUp = None
 		self.navButton = None
+		self.skipButton = None
 
 		self.actionIsRunning = False
 		self.pseudoCode = PseudoCode()
@@ -62,6 +64,7 @@ class Controller(BoxLayout):
 	def doUpdates(self):
 		"""Update methods that keeps the view synchronized with the data"""
 		self.pseudoCodeBox.updateContent()
+		self.commandsBox.updateContent()
 
 	## Over-writable
 	def buildInternal(self):
@@ -153,13 +156,14 @@ class Controller(BoxLayout):
 	def createNav(self):
 		self.navButton = Unfreeze_Action_Button(action = self.action, 
 			endTarget = self.navEndTarget)
+		self.skipButton = Skip_Through_Action_Button(action = self.action,
+			endTarget = self.navEndTarget)
 		self.add_widget(self.navButton)
+		self.add_widget(self.skipButton)
 
 	def navEndTarget(self):
 		self.actionIsRunning = False
-
-		if self.navButton != None:
-			self.navButton = None
+		self.destroyNav()
 
 	def lockCallBack(self, logTexts):
 		self.doUpdates()
@@ -169,15 +173,19 @@ class Controller(BoxLayout):
 
 	def actionEndTarget(self):
 		self.actionIsRunning = False
-		self.doUpdates()
-		
+
 		self.destroyNav()
-		# self.logBox.setText("")
+		self.doUpdates()
+		self.logBox.setText("")
 
 	def destroyNav(self):
-		if not self.actionIsRunning and self.navButton != None:
-			self.navButton.parent.remove_widget(self.navButton)
-			self.navButton = None
+		if not self.actionIsRunning:
+			if self.navButton != None:
+				self.navButton.parent.remove_widget(self.navButton)
+				self.navButton = None
+			if self.skipButton != None:
+				self.skipButton.parent.remove_widget(self.skipButton)
+				self.skipButton = None
 
 	def cmdTarget(self, actionName):
 		"""Recieves name property of the relevant CallableActions object 
@@ -222,7 +230,7 @@ class Controller(BoxLayout):
 				self.promptEndTarget(actionName, {})
 
 		else: # Error report in case an action match is not found for some reason
-			displayErrorMsg("Action '{}' not found!".format(actionName))			
+			self.displayErrorMsg("Action '{}' not found!".format(actionName))
 
 class CustomController(Controller):
 
@@ -285,10 +293,15 @@ class CustomController(Controller):
 		self.navButton = Unfreeze_Action_Button(action = self.action,
 			endTarget = self.navEndTarget,
 			size_hint = (0.3, 1))
+		self.skipButton = Skip_Through_Action_Button(action = self.action,
+			endTarget = self.navEndTarget,
+			size_hint = (0.3, 1))
 		self.allCmds.add_widget(self.navButton)
+		self.allCmds.add_widget(self.skipButton)
 
 	def doUpdates(self):
 		self.variableBox.updateContent()
 		self.pointerBox.updateContent()
 		self.dataTable.updateContent()
 		self.pseudoCodeBox.updateContent()
+		self.commandsBox.updateContent()

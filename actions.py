@@ -122,6 +122,7 @@ class CallableActions:
 
 		self.locked = False
 		self.processing = False
+		self.skip = False
 
 		self.lockCallBack = lockCallBack
 		self.logTexts = []
@@ -136,10 +137,12 @@ class CallableActions:
 		"""Freezes the calling function by using a slowly looping infinite loop
 		which continuously checks if the lock has been removed by a user action
 		signalling that the function should unfreeze"""
-		self.lockCallBack(self.logTexts)
-		self.logTexts = []
+		self.locked = False
 
-		self.locked = True
+		if not self.skip:
+			self.locked = True
+			self.lockCallBack(self.logTexts)
+			self.logTexts = []
 
 		while self.locked:
 			time.sleep(0.15)
@@ -153,6 +156,10 @@ class CallableActions:
 	def unlock(self):
 		self.locked = False
 
+	def skipOver(self):
+		self.skip = True
+		self.unlock()
+
 	def light(self, indices):
 		self.codeObj.highlight(indices)
 
@@ -160,12 +167,15 @@ class CallableActions:
 
 		self.functionToExecute[0](**kwargs)
 
+		print("Exited wrapper")
+
 		self.processing = False
 
 		for i in range(40):
 			pass
 
 		self.endTarget()
+		self.skip = False
 
 	def executeAssociatedFunction(self, promptedValues):
 		#any function to be freezed must expect keyword arguments lock and log
